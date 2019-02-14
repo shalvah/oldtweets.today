@@ -60,7 +60,7 @@ function getTweetEmbedHtml(tweetUrl) {
 
 exports.getTweetsOnThisDay = (req, res) => {
     switch (req.method) {
-        case 'POST':
+        case 'GET':
             let result = getTweetsOnThisDay(req.query.username);
             return res.status(200).send(JSON.stringify(result));
         case 'OPTIONS':
