@@ -1,6 +1,6 @@
 'use strict';
 
-async function getTweetsOnThisDay(username, today = new Date()) {
+function getTweetsOnThisDay(username, today = new Date()) {
     const baseDate = today;
 
     // Generate an array of all the years we're looking for tweets in.
@@ -15,11 +15,13 @@ async function getTweetsOnThisDay(username, today = new Date()) {
         return getTweetsMadeInYear(username, baseDate)
     });
 
-    let results = await Promise.all(requests);
-    return years.reduce((tweets, year, index) => {
-        tweets[year] = results[index];
-        return tweets;
-    }, {});
+    return Promise.all(requests)
+        .then(function groupTweetsByYear(results) {
+            return years.reduce((tweets, year, index) => {
+                tweets[year] = results[index];
+                return tweets;
+            }, {});
+        });
 }
 
 function getTweetsMadeInYear(username, date) {
