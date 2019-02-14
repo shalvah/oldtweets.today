@@ -61,8 +61,9 @@ function getTweetEmbedHtml(tweetUrl) {
 exports.getTweetsOnThisDay = (req, res) => {
     switch (req.method) {
         case 'GET':
-            let result = getTweetsOnThisDay(req.query.username);
-            return res.status(200).send(JSON.stringify(result));
+            getTweetsOnThisDay(req.query.username)
+                .then(result => res.status(200).send(JSON.stringify(result)));
+            return;
         case 'OPTIONS':
             // CORS preflight? Gotcha.
 
