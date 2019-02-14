@@ -2,9 +2,10 @@ service: tweeted-on-this-day
 
 provider:
   name: google
-  runtime: nodejs
+  runtime: nodejs8
   project: tweetedonthisday
   timeout: 30s
+  region: europe-west1
   # the path to the credentials file needs to be absolute
   credentials: tweetedonthisday-credentials.json
 
