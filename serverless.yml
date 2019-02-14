@@ -1,11 +1,12 @@
-service: TweetedOnThisDay # NOTE: Don't put the word "google" in here
+service: tweeted-on-this-day
 
 provider:
   name: google
   runtime: nodejs
-  project: my-project
+  project: tweetedonthisday
+  timeout: 30s
   # the path to the credentials file needs to be absolute
-  credentials: ~/.gcloud/keyfile.json
+  credentials: tweetedonthisday-credentials.json
 
 plugins:
   - serverless-google-cloudfunctions
@@ -14,13 +15,13 @@ plugins:
 # package should be excluded (and not the whole node_modules directory)
 package:
   exclude:
-    - node_modules/**
     - .gitignore
     - .git/**
+    - test.js
 
 functions:
-  first:
-    handler: http
+  getTweetsOnThisDay:
+    handler: getTweetsOnThisDay
     events:
       - http: path
 

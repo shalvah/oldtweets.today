@@ -1,5 +1,5 @@
 {
-  "name": "TweetedOnThisDay",
+  "name": "tweeted-on-this-day",
   "version": "0.1.0",
   "description": "",
   "main": "index.js",
@@ -9,6 +9,12 @@
   "author": "serverless.com",
   "license": "MIT",
   "devDependencies": {
+    "chai": "^4.2.0",
+    "mocha": "^5.2.0",
     "serverless-google-cloudfunctions": "^1.2.0"
+  },
+  "dependencies": {
+    "cheerio": "^1.0.0-rc.2",
+    "got": "^9.6.0"
   }
 }
