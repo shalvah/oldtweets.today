@@ -58,15 +58,18 @@ function getTweetEmbedHtml(tweetUrl) {
         .then(r => qs.unescape(JSON.parse(r.body).html));
 }
 
+function respond(res, body = null, status = 200) {
+    res.set('Content-Type', 'application/json');
+    res.set('Access-Control-Allow-Origin', '*');
+    res.status(status).send(body ? JSON.stringify(body) : '')
+}
+
 exports.getTweetsOnThisDay = (req, res) => {
     switch (req.method) {
         case 'GET':
             getTweetsOnThisDay(req.query.username)
-                .then(result => res.status(200).send(JSON.stringify(result)));
+                .then(tweets => respond(res, tweets));
             return;
-        case 'OPTIONS':
-            // CORS preflight? Gotcha.
-
         default:
         // I don't fucking care
     }
