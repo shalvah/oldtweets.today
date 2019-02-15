@@ -1,0 +1,70 @@
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Your tweets on this day in the past</title>
+</head>
+
+<body>
+<h2>See what you've tweeted on this day in the past.</h2>
+<form onsubmit="handleFormSubmit(event);">
+    <input type="text" name="username" placeholder="Your Twitter username" required>
+    <button type="submit">Show me</button>
+</form>
+
+<div id="tweets-container"></div>
+<script>
+    /**
+     * @param {Event} event
+     */
+    function handleFormSubmit(event) {
+        const username = event.target.querySelector('input[name=username]').value;
+        getTweetsOnThisDay(username)
+            .then(tweets => {
+                let tweetsHtml = [];
+                for (let year of Object.keys(tweets).reverse()) {
+                    tweetsHtml.push(`<div>`);
+                    tweetsHtml.push(`<h3>${year}</h3>`);
+                    tweetsHtml.push(tweets[year].join("\n"));
+                    tweetsHtml.push("</div><br>");
+                }
+                injectContentIntoPage(tweetsHtml.join("\n"), true);
+            })
+            .catch(injectContentIntoPage);
+        event.preventDefault();
+    }
+
+    /**
+     * @param {string} username
+     */
+    function getTweetsOnThisDay(username) {
+        const apiUrl = `https://europe-west1-tweetedonthisday.cloudfunctions.net/getTweetsOnThisDay?username=${username}`;
+        return fetch(apiUrl).then(r => r.json())
+            .then(r => {
+                if (r.error) {
+                    console.log(r.error);
+                    throw 'Something went wrong. Please try again.😭';
+                }
+                return r;
+            })
+            .catch(r => {
+                if (r.error) {
+                    console.log(r.error);
+                }
+                throw 'Something went wrong. Please try again.😭';
+            })
+    }
+
+    /**
+     * @param {string} content
+     * @param {boolean} shouldRerenderWithTwittr
+     */
+    function injectContentIntoPage(content, shouldRerenderWithTwittr = false) {
+        let container = document.getElementById('tweets-container');
+        container.innerHTML = content;
+        if (shouldRerenderWithTwittr) {
+            twttr.widgets.load(container);
+        }
+    }
+</script>
+<script async="" src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+</body>
