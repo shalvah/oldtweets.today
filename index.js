@@ -81,7 +81,16 @@ exports.getTweetsOnThisDay = (req, res) => {
             if (username.startsWith('@')) {
                 username = username.substr(1);
             }
-            return getTweetsOnThisDay(username)
+
+            // Out function runs in UTC time. So if a user in UTC+1 (offset: -60)
+            // uses our app at 00:30 Feb 16, they'll get tweets made on Feb 15.
+            // We need to change our date query to reflect the day wherever they are
+            let offset = req.query.utcOffset;
+            let today = new Date();
+            if (offset) {
+                today.setTime(today.getTime() + (-1 * offset * 60 * 1000));
+            }
+            return getTweetsOnThisDay(username, today)
                 .then(tweets => respond(res, tweets));
         default:
             return respond(res, {error: "Read the fucking docs; it's a GET request."}, 405);

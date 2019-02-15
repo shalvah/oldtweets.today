@@ -163,7 +163,8 @@
      * @param {string} username
      */
     function getTweetsOnThisDay(username) {
-        const apiUrl = `https://europe-west1-tweetedonthisday.cloudfunctions.net/getTweetsOnThisDay?username=${username}`;
+        const utcOffset = (new Date()).getTimezoneOffset();
+        const apiUrl = `https://europe-west1-tweetedonthisday.cloudfunctions.net/getTweetsOnThisDay?username=${username}&utcOffset=${utcOffset}`;
         return fetch(apiUrl).then(r => r.json())
             .then(r => {
                 if (r.error) {
