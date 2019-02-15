@@ -78,7 +78,7 @@
                     }
                 }
                 injectContentIntoPage(tweetsHtml.join("\n"), true);
-                document.title = "Old Tweets by @" + username.replace("@", "");
+                document.title = `@${username.replace("@", "")}'s old Tweets`;
                 window.history.pushState({ username },"", username);
             })
             .catch(injectContentIntoPage);
