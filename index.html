@@ -69,10 +69,12 @@
             .then(tweets => {
                 let tweetsHtml = [];
                 for (let year of Object.keys(tweets).reverse()) {
-                    tweetsHtml.push(`<div>`);
-                    tweetsHtml.push(`<h3>${year}</h3>`);
-                    tweetsHtml.push(tweets[year].join("\n"));
-                    tweetsHtml.push("</div><br>");
+                    if (tweets[year].length) {
+                        tweetsHtml.push(`<div>`);
+                        tweetsHtml.push(`<h3>${year}</h3>`);
+                        tweetsHtml.push(tweets[year].join("\n"));
+                        tweetsHtml.push("</div><br>");
+                    }
                 }
                 injectContentIntoPage(tweetsHtml.join("\n"), true);
             })
