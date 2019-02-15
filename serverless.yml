@@ -19,7 +19,7 @@ package:
     - .gitignore
     - .git/**
     - test.js
-    - index.html
+    - docs/index.html
 
 functions:
   getTweetsOnThisDay:
