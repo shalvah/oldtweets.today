@@ -64,7 +64,8 @@
      * @param {Event} event
      */
     function handleFormSubmit(event) {
-        const username = event.target.querySelector('input[name="username"]').value;
+        let username = event.target.querySelector('input[name="username"]').value;
+        username = username.trim();
         getTweetsOnThisDay(username)
             .then(tweets => {
                 let tweetsHtml = [];
@@ -77,6 +78,8 @@
                     }
                 }
                 injectContentIntoPage(tweetsHtml.join("\n"), true);
+                document.title = "Old Tweets by @" + username.replace("@", "");
+                window.history.pushState({ username },"", username);
             })
             .catch(injectContentIntoPage);
         event.preventDefault();
@@ -105,12 +108,12 @@
 
     /**
      * @param {string} content
-     * @param {boolean} shouldRerenderWithTwittr
+     * @param {boolean} isTwitterResponse
      */
-    function injectContentIntoPage(content, shouldRerenderWithTwittr = false) {
+    function injectContentIntoPage(content, isTwitterResponse = false) {
         let container = document.getElementById('tweets-container');
         container.innerHTML = content;
-        if (shouldRerenderWithTwittr) {
+        if (isTwitterResponse) {
             twttr.widgets.load(container);
         }
     }
