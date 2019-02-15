@@ -1,7 +1,8 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Your tweets on this day in the past</title>    <meta name="description" content="The easiest way to download any video or GIF from Twitter ">
+    <title>Your tweets on this day in the past</title>
+    <meta name="description" content="The easiest way to download any video or GIF from Twitter ">
 
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website">
@@ -42,13 +43,28 @@
 </form>
 
 <div id="tweets-container"></div>
+<script>
+    // prefill the value if the user is coming from a direct link
+    if (window.location.pathname
+        && !window.location.pathname.includes('index.html')
+        && window.location.pathname != '/') {
+        document.querySelector('input[name="username"]').value = queryParams.get('username');
+    } else {
+        // or try query string
+        let queryString = window.location.search;
+        let queryParams = new URLSearchParams(queryString);
+        if (queryParams.get('username')) {
+            document.querySelector('input[name="username"]').value = queryParams.get('username');
+        }
+    }
+</script>
 
 <script>
     /**
      * @param {Event} event
      */
     function handleFormSubmit(event) {
-        const username = event.target.querySelector('input[name=username]').value;
+        const username = event.target.querySelector('input[name="username"]').value;
         getTweetsOnThisDay(username)
             .then(tweets => {
                 let tweetsHtml = [];
