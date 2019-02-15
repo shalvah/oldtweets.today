@@ -67,10 +67,18 @@ function respond(res, body = null, status = 200) {
 exports.getTweetsOnThisDay = (req, res) => {
     switch (req.method) {
         case 'GET':
-            getTweetsOnThisDay(req.query.username)
+            let username = req.query.username;
+            if (username === undefined) {
+                respond(res, {error: 'Username query parameter is required.'}, 400);
+                return;
+            }
+
+            if (username.startsWith('@')) {
+                username = username.substr(1);
+            }
+            return getTweetsOnThisDay(username)
                 .then(tweets => respond(res, tweets));
-            return;
         default:
-        // I don't fucking care
+            return respond(res, {error: "Read the fucking docs; it's a GET request."}, 405);
     }
 };
