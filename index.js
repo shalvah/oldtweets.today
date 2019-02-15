@@ -53,7 +53,12 @@ function getSearchQuery(username, baseDate) {
 function getTweetEmbedHtml(tweetUrl) {
     const got = require("got");
     const qs = require('querystring');
-    const url = 'https://publish.twitter.com/oembed?' + qs.stringify({ url: tweetUrl, theme: 'dark' });
+    const url = 'https://publish.twitter.com/oembed?' + qs.stringify({
+        url: tweetUrl,
+        theme: 'dark',
+        align: 'center',
+        dnt: true
+    });
     return got(url, {headers: {'user-agent': null}})
         .then(r => qs.unescape(JSON.parse(r.body).html));
 }
