@@ -16,63 +16,12 @@
     <meta property="twitter:title" content="#TwitterThrowback">
     <meta property="twitter:description" content="See what you've Tweeted on this day in the past.">
 
-    <link rel="icon" href="favicon.ico" type="image/x-icon" />
+    <!-- stylesheet -->
+    <link rel="stylesheet" href="css/app.css">
 
-    <style>
-        body {
-            background: url(trianglify.png);
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', Calibri, sans-serif;
-            font-size: 1.5em;
-            padding: 20px;
-            display: flex;
-            flex-direction: column;
-            text-align: center;
-        }
+    <!--favicon-->
+    <link rel="icon" href="img/favicon.ico" type="image/x-icon" />
 
-        #username-input {
-            height: 2.5rem;
-            background: none;
-            padding: 0.5rem 0.5rem;
-            font-size: 20px;
-            width: 50%;
-            outline: none;
-            /* A Twitter-y colour border: 2px solid #3B94D9; */
-            border: 2px solid darkblue;
-            -webkit-transition: all 0.28s ease;
-            transition: all 0.28s ease;
-            border-top-left-radius: 5px;
-            border-bottom-left-radius: 5px;
-            font-family: inherit;
-        }
-
-        #submit-button {
-            background-color: darkblue;
-            font-size: 20px;
-            color: white;
-            height: 2.5rem;
-            padding: 0.5rem 1rem;
-            border-top-right-radius: 5px;
-            border-bottom-right-radius: 5px;
-            border: none;
-            font-family: inherit;
-        }
-
-        #loading-indicator {
-            font-size: 1.8rem;
-            padding: 20px;
-            display: none;
-        }
-
-        #tweets-container {
-            padding-top: 10px;
-            display: none;
-        }
-
-        #help-text{
-            padding-top: 5px;
-        }
-
-    </style>
 </head>
 
 <body>
@@ -83,7 +32,7 @@ See what you've tweeted on this day in the past.
     <button id="submit-button" type="submit">Show me</button>
     <div id="help-text"><small>If your profile is protected🔒, you'll need to <a href="https://help.twitter.com/en/safety-and-security/how-to-make-twitter-private-and-public">unlock it first</a>.</small></div>
 </form>
-<small>Developer💻? <a href="//github.com/shalvah/oldtweets.today">Check out the source code</a>👀</small>
+<small>Developer💻? <a href="//github.com/shalvah/oldtweets.today">Check out the source code</a> 👀</small>
 
 <div id="loading-indicator"></div>
 <div id="tweets-container"></div>
@@ -147,7 +96,7 @@ See what you've tweeted on this day in the past.
         event.preventDefault();
         window.username = usernameInput.value;
         window.username = window.username.trim();
-        
+
         history.pushState({ username }, '', '#' + username);
         window.day = (new Date).toLocaleString('en-us', { month: 'long', day: 'numeric' });
 

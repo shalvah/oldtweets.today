@@ -1,0 +1,61 @@
+@import url('https://fonts.googleapis.com/css?family=Roboto+mono');
+
+body {
+  background: url(../img/trianglify.png);
+  font-family: 'Roboto Mono', monospace;
+  font-size: 1.5em;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  text-align: center;
+}
+a {
+  text-decoration: none;
+}
+a:hover {
+  border-bottom: 1px dotted #000;
+}
+
+#username-input {
+  margin: 25px 0 25px 25px;
+  height: 3.0rem;
+  background: none;
+  padding: 0.5rem 0.5rem;
+  font-size: 20px;
+  width: 50%;
+  outline: none;
+  /* A Twitter-y colour border: 2px solid #3B94D9; */
+  border: 2px solid #0d47a1;
+  -webkit-transition: all 0.28s ease;
+  transition: all 0.28s ease;
+  border-top-left-radius: 10px;
+  border-bottom-left-radius: 10px;
+  font-family: inherit;
+}
+
+#submit-button {
+  background-color: #0d47a1;
+  font-size: 20px;
+  color: white;
+  height: 3.0rem;
+  padding: 0.5rem 1rem;
+  border-top-right-radius: 10px;
+  border-bottom-right-radius: 10px;
+  border: none;
+  font-family: inherit;
+}
+
+#loading-indicator {
+  font-size: 1.8rem;
+  padding: 20px;
+  display: none;
+}
+
+#tweets-container {
+  padding-top: 10px;
+  display: none;
+}
+
+#help-text{
+  padding-top: 5px;
+}
