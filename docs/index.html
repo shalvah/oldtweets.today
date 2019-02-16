@@ -249,7 +249,7 @@ See what you've tweeted on this day in the past.
 
     function shareToTwitter() {
         const url = `http://twitter.com/share?text=Here's my TwitterThrowback. Check yours here` +
-            `&url=http://oldtweets.today/#${window.username}&hashtags=OldTweetsToday,TwitterThrowback`;
+            `&url=http://oldtweets.today/?username=${window.username}&hashtags=OldTweetsToday,TwitterThrowback`;
         const newWindow = window.open(url, '_blank');
         newWindow.focus();
     }
