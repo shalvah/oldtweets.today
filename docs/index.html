@@ -107,6 +107,7 @@ a:hover {
 
     </style>
 
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
 </head>
 
 <body>
@@ -122,7 +123,7 @@ See what you've tweeted on this day in the past.
 <div id="loading-indicator"></div>
 <div id="tweets-container"></div>
 
-<button onclick="backTop()" id="topBtn" title="Back to top">👆</button>
+<button onclick="backToTop()" id="topBtn" title="Back to top">👆</button>
 
 <script>
     var tweetsContainer = document.getElementById('tweets-container');
@@ -240,7 +241,7 @@ See what you've tweeted on this day in the past.
                 // this would be simpler, but I have a suspicion it's slower
                 // return Object.assign({}, ...responses);
 
-                results = responses.reduce((all, r) => {
+                let results = responses.reduce((all, r) => {
                     for (let year in r) {
                         all[year] = r[year];
                     }
@@ -288,10 +289,9 @@ function scrollDown() {
 }
 
 // When the user clicks on the button, scroll to the top of the document
-function backTop() {
+function backToTop() {
   document.body.scrollTop = 0;
   document.documentElement.scrollTop = 0;
 }
 </script>
-<script async="" src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
 </body>
