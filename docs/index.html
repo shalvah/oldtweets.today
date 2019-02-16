@@ -65,6 +65,7 @@
         }
 
         #tweets-container {
+            padding-top: 10px;
             display: none;
         }
 
@@ -102,8 +103,8 @@
 </script>
 
 <script>
-    let loadingIndicator = document.querySelector('#loading-indicator');
-    let submitButton = document.querySelector('#submit-button');
+    var loadingIndicator = document.querySelector('#loading-indicator');
+    var submitButton = document.querySelector('#submit-button');
 
     function showLoadingIndicator() {
         submitButton.disabled = true;
@@ -121,7 +122,7 @@
     }
 
     function loadThatShit() {
-        loadingIndicator.innerText = "Fetching your tweets...just a sec";
+        loadingIndicator.innerText = `Fetching your tweets from ${day}...just a sec`;
         loadingIndicator.style.display = 'block';
         emojiLoad();
     }
@@ -129,7 +130,7 @@
     function emojiLoad() {
         window.loaderInterval = setInterval(() => {
             let emojis = ['🤔', '📝', '👩‍🏭', '🤗', '🙈', '😸', '🙂'];
-            loadingIndicator.innerText = "Fetching your tweets...just a sec " + emojis[Math.floor(Math.random() * emojis.length)];
+            loadingIndicator.innerText = `Fetching your tweets from ${day}...just a sec ${emojis[Math.floor(Math.random() * emojis.length)]}`;
         }, 750);
     }
 </script>
@@ -140,27 +141,35 @@
     function handleFormSubmit(event) {
         event.preventDefault();
         let username = event.target.querySelector('input[name="username"]').value;
-        window.location.hash = username;
-        showLoadingIndicator();
+        history.pushState({ username }, '', '#' + username);
+        window.day = (new Date).toLocaleString('en-us', { month: 'long', day: 'numeric' });
+        showLoadingIndicator(day);
         // get rid of any existing content
         window['tweets-container'].innerHTML = '';
         username = username.trim();
         getTweetsOnThisDay(username)
             .then(tweets => {
                 let tweetsHtml = [];
+                let hasContent = false;
                 for (let year of Object.keys(tweets).reverse()) {
                     if (tweets[year].length) {
+                        hasContent = true;
                         tweetsHtml.push(`<div>`);
                         tweetsHtml.push(`<h3>${year}</h3>`);
                         tweetsHtml.push(tweets[year].join("\n"));
                         tweetsHtml.push("</div><br>");
                     }
                 }
+
+                if (!hasContent) {
+                    throw `Sorry, we couldn't find any tweets by <b>@${username}</b> on <b>${day}</b>😕`;
+                }
                 injectContentIntoPage(tweetsHtml.join("\n"), true);
                 document.title = `@${username.replace("@", "")}'s old Tweets`;
             })
-            .then(() => setTimeout(doneWithLoading, 1000))
-            .catch(injectContentIntoPage);
+            // Use a timeout to allow the Twitter library hydrate the tweet DOM elements
+            .then(() => setTimeout(doneWithLoading, 3000))
+            .catch(showError);
     }
 
     /**
@@ -189,12 +198,18 @@
      * @param {string} content
      * @param {boolean} isTwitterResponse
      */
-    function injectContentIntoPage(content, isTwitterResponse = false) {
+    function injectContentIntoPage(content) {
         let container = document.getElementById('tweets-container');
         container.innerHTML = content;
-        if (isTwitterResponse) {
-            twttr.widgets.load(container);
-        }
+        twttr.widgets.load(container);
+    }
+
+    function showError(message) {
+        doneWithLoading();
+        setTimeout(() => {
+            loadingIndicator.innerHTML = message;
+            loadingIndicator.style.display = 'block';
+        }, 1000);
     }
 </script>
 <script async="" src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
