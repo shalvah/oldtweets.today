@@ -20,8 +20,8 @@
 
     <style>
         body {
-            background: url(trianglify.png);
-            background-repeat: repeat-y;
+            background: linear-gradient(0deg,rgba(255,255,150,0.3),rgba(255,255,150,0.3)), url(trianglify.png);
+            background-repeat: repeat;
             background-size: contain;
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', Calibri, sans-serif;
             font-size: 1.5em;
@@ -29,6 +29,10 @@
             display: flex;
             flex-direction: column;
             text-align: center;
+        }
+
+        form {
+            margin: 0;
         }
 
         #username-input {
@@ -57,12 +61,19 @@
             border-bottom-right-radius: 5px;
             border: none;
             font-family: inherit;
+            cursor: pointer;
         }
 
         #loading-indicator {
             font-size: 1.8rem;
             padding: 20px;
             display: none;
+        }
+
+        .twitter-tweet {
+            margin: 0 !important;
+            display: inline-block !important;
+            width: 400px !important
         }
 
         #tweets-container {
@@ -83,9 +94,9 @@ See what you've tweeted on this day in the past.
 <form onsubmit="handleFormSubmit(event);">
     <input id="username-input" type="text" name="username" placeholder="Your Twitter username" required>
     <button id="submit-button" type="submit">Show me</button>
-    <div id="help-text"><small>If your profile is protected🔒, you'll need to <a href="https://twitter.com/settings/safety">unlock it first</a>.</small></div>
+    <div id="help-text"><small>If your profile is protected 🔒, you'll need to <a href="https://twitter.com/settings/safety">unlock it first</a>.</small></div>
 </form>
-<small>Developer💻? <a href="//github.com/shalvah/oldtweets.today">Check out the source code</a>👀</small>
+<small>Developer 💻? <a href="//github.com/shalvah/oldtweets.today">Check out the source code</a>👀</small>
 
 <div id="loading-indicator"></div>
 <div id="tweets-container"></div>
@@ -156,10 +167,8 @@ See what you've tweeted on this day in the past.
                 for (let year of Object.keys(tweets).reverse()) {
                     if (tweets[year].length) {
                         hasContent = true;
-                        tweetsHtml.push(`<div>`);
                         tweetsHtml.push(`<h3>${year}</h3>`);
                         tweetsHtml.push(tweets[year].join("\n"));
-                        tweetsHtml.push("</div><br>");
                     }
                 }
 
