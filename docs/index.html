@@ -168,7 +168,7 @@
                 document.title = `@${username.replace("@", "")}'s old Tweets`;
             })
             // Use a timeout to allow the Twitter library hydrate the tweet DOM elements
-            .then(() => setTimeout(doneWithLoading, 3000))
+            .then(() => setTimeout(doneWithLoading, 2000))
             .catch(showError);
     }
 
