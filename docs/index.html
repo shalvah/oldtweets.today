@@ -91,7 +91,7 @@
 <script>
     // prefill the value if the user is coming from a direct link
     let hash = window.location.hash.split('#')[1];
-    if (hash != '') {
+    if (hash != '' && hash != undefined) {
         document.querySelector('input[name="username"]').value = hash;
     } else {
         // or try query string
