@@ -88,7 +88,7 @@
 <div id="tweets-container"></div>
 <script>
     // prefill the value if the user is coming from a direct link
-    let hash = window.location.hash;
+    let hash = window.location.hash.trimLeft('#');
     if (hash != '') {
         document.querySelector('input[name="username"]').value = hash;
     } else {
