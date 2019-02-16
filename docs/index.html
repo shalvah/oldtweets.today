@@ -16,11 +16,74 @@
     <meta property="twitter:title" content="#TwitterThrowback">
     <meta property="twitter:description" content="See what you've Tweeted on this day in the past.">
 
-    <!-- stylesheet -->
-    <link rel="stylesheet" href="./css/app.css">
-
     <!--favicon-->
     <link rel="icon" href="img/favicon.ico" type="image/x-icon" />
+
+    <style>
+    @import url('https://fonts.googleapis.com/css?family=Roboto+mono');
+
+body {
+  background: url(./img/trianglify.png);
+  font-family: 'Roboto Mono', monospace;
+  font-size: 1.5em;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  text-align: center;
+}
+a {
+  text-decoration: none;
+}
+a:hover {
+  border-bottom: 1px dotted #000;
+}
+
+#username-input {
+  margin: 25px 0 25px 25px;
+  height: 3.0rem;
+  background: none;
+  padding: 0.5rem 0.5rem;
+  font-size: 20px;
+  width: 50%;
+  outline: none;
+  /* A Twitter-y colour border: 2px solid #3B94D9; */
+  border: 2px solid #0d47a1;
+  -webkit-transition: all 0.28s ease;
+  transition: all 0.28s ease;
+  border-top-left-radius: 10px;
+  border-bottom-left-radius: 10px;
+  font-family: inherit;
+}
+
+#submit-button {
+  background-color: #0d47a1;
+  font-size: 20px;
+  color: white;
+  height: 3.0rem;
+  padding: 0.5rem 1rem;
+  border-top-right-radius: 10px;
+  border-bottom-right-radius: 10px;
+  border: none;
+  font-family: inherit;
+}
+
+#loading-indicator {
+  font-size: 1.8rem;
+  margin: 50px;
+  padding: 20px;
+  display: none;
+}
+
+#tweets-container {
+  padding-top: 10px;
+  display: none;
+}
+
+#help-text{
+  padding-top: 5px;
+}
+
+    </style>
 
 </head>
 
@@ -38,6 +101,148 @@ See what you've tweeted on this day in the past.
 <div id="tweets-container"></div>
 
 
-<script src ="./js/app.js"></script>
+<script>
+    var tweetsContainer = document.getElementById('tweets-container');
+    var usernameInput = document.getElementById('username-input');
+    var submitButton = document.getElementById('submit-button');
+    var loadingIndicator = document.getElementById('loading-indicator');
+</script>
+<script>
+    // Prefill the value if the user is coming from a direct link (oldtweets.today/#username)
+    // Normally, I'd want to do this using a path, but GitHub Pages doesn't support routing via paths
+    let hash = window.location.hash.split('#')[1];
+    if (hash != '' && hash != undefined) {
+        usernameInput.value = hash;
+    } else {
+        // Also support query string (oldtweets.today?username=<username>)
+        let queryString = window.location.search;
+        let queryParams = new URLSearchParams(queryString);
+        if (queryParams.get('username')) {
+            usernameInput.value = queryParams.get('username');
+        }
+    }
+</script>
+
+<script>
+    function showLoadingIndicator() {
+        submitButton.disabled = true;
+        loadThatShit();
+    }
+
+    function doneWithLoading(succesful = true) {
+        clearInterval(window.loaderInterval);
+        succesful && (loadingIndicator.innerText = "Done! ✅");
+        setTimeout(() => {
+            submitButton.removeAttribute('disabled');
+            succesful && (loadingIndicator.style.display = 'none');
+            succesful && (tweetsContainer.style.display = 'block');
+        }, 500);
+    }
+
+    function loadThatShit() {
+        loadingIndicator.innerText = `Fetching ${window.username}'s tweets from ${day}...just a sec 🚀`;
+        loadingIndicator.style.display = 'block';
+        emojiLoad();
+    }
+
+    function emojiLoad() {
+        window.loaderInterval = setInterval(() => {
+            let emojis = ['🤔', '📝', '👩‍🏭', '🤗', '🙈', '😸', '🙂', '😅', '💪', '😊'];
+            loadingIndicator.innerText = `Fetching ${window.username}'s tweets from ${day}...just a sec ${emojis[Math.floor(Math.random() * emojis.length)]}`;
+        }, 750);
+    }
+</script>
+<script>
+    /**
+     * @param {Event} event
+     */
+    function handleFormSubmit(event) {
+        event.preventDefault();
+        window.username = usernameInput.value;
+        window.username = window.username.trim();
+
+        history.pushState({ username }, '', '#' + username);
+        window.day = (new Date).toLocaleString('en-us', { month: 'long', day: 'numeric' });
+
+        showLoadingIndicator();
+        // get rid of any existing content
+        tweetsContainer.innerHTML = '';
+        getTweetsOnThisDay(username)
+            .then(tweets => {
+                let tweetsHtml = [];
+                let hasContent = false;
+                for (let year of Object.keys(tweets).reverse()) {
+                    if (tweets[year].length) {
+                        hasContent = true;
+                        tweetsHtml.push(`<div>`);
+                        tweetsHtml.push(`<h3>${year}</h3>`);
+                        tweetsHtml.push(tweets[year].join("\n"));
+                        tweetsHtml.push("</div><br>");
+                    }
+                }
+
+                if (!hasContent) {
+                    throw `Sorry, we couldn't find any tweets by <b>${window.username}</b> on <b>${window.day}</b>😕`;
+                }
+                injectContentIntoPage(tweetsHtml.join("\n"), true);
+                document.title = `@${username.replace("@", "")}'s old Tweets`;
+            })
+            .catch(showError);
+    }
+
+    /**
+     * @param {string} username
+     */
+    function getTweetsOnThisDay(username) {
+        const today = new Date();
+        const utcOffset = today.getTimezoneOffset();
+        const baseApiUrl = `https://europe-west1-tweetedonthisday.cloudfunctions.net/getTweetsOnThisDay?username=${username}&utcOffset=${utcOffset}`;
+        let baseYear =today.getFullYear() - 1;
+        let years = [];
+        // request in three-year batches to improve speed
+        while (baseYear > 2005) {
+            let endYear = baseYear - 2;
+            if ((endYear - 2006) < 2) {
+                endYear = 2006;
+            }
+            years.push([baseYear, endYear]);
+            baseYear = endYear - 1;
+        }
+
+        let apiUrls = years.map(yearSet => `${baseApiUrl}&from=${yearSet[0]}&until=${yearSet[1]}`);
+
+        return Promise.all(apiUrls.map(url => fetch(url)))
+            .then(responses => Promise.all(responses.map(r => r.json())))
+            .then(responses => {
+                // this would be simpler, but I have a suspicion it's slower
+                // return Object.assign({}, ...responses);
+
+                results = responses.reduce((all, r) => {
+                    for (let year in r) {
+                        all[year] = r[year];
+                    }
+                    return all;
+                }, {});
+                return results;
+            })
+            .catch(r => {
+                if (r.error) {
+                    console.log(r.error);
+                }
+                console.log(r);
+                throw 'Something went wrong. Please try again.😭';
+            })
+    }
+
+    /**
+     * @param {string} content
+     */
+    function injectContentIntoPage(content) {
+        twttr.events.bind('loaded', () => setTimeout(doneWithLoading, 1000));
+        let container = document.getElementById('tweets-container');
+        container.innerHTML = content;
+        twttr.widgets.load(container);
+    }
+    </script>
 <script async="" src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
 </body>
