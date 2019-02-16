@@ -16,77 +16,114 @@
     <meta property="twitter:title" content="#TwitterThrowback">
     <meta property="twitter:description" content="See what you've Tweeted on this day in the past.">
 
-    <link rel="icon" href="favicon.ico" type="image/x-icon" />
+    <!--favicon-->
+    <link rel="icon" href="img/favicon.ico" type="image/x-icon" />
 
     <style>
-        body {
-            background: url(trianglify.png);
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', Calibri, sans-serif;
-            font-size: 1.5em;
-            padding: 20px;
-            display: flex;
-            flex-direction: column;
-            text-align: center;
-        }
+    @import url('https://fonts.googleapis.com/css?family=Roboto+mono');
 
-        #username-input {
-            height: 2.5rem;
-            background: none;
-            padding: 0.5rem 0.5rem;
-            font-size: 20px;
-            width: 50%;
-            outline: none;
-            /* A Twitter-y colour border: 2px solid #3B94D9; */
-            border: 2px solid darkblue;
-            -webkit-transition: all 0.28s ease;
-            transition: all 0.28s ease;
-            border-top-left-radius: 5px;
-            border-bottom-left-radius: 5px;
-            font-family: inherit;
-        }
+body {
+  background: url(./img/trianglify.png);
+  font-family: 'Roboto Mono', monospace;
+  font-size: 1.5em;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  text-align: center;
+}
+a {
+  text-decoration: none;
+}
+a:hover {
+  border: 1px dotted #000;
+  padding: 3px;
+  border-radius: 10px;
+}
 
-        #submit-button {
-            background-color: darkblue;
-            font-size: 20px;
-            color: white;
-            height: 2.5rem;
-            padding: 0.5rem 1rem;
-            border-top-right-radius: 5px;
-            border-bottom-right-radius: 5px;
-            border: none;
-            font-family: inherit;
-        }
+#username-input {
+  margin: 25px 0 25px 25px;
+  height: 3.0rem;
+  background: none;
+  padding: 0.5rem 0.5rem;
+  font-size: 20px;
+  width: 50%;
+  outline: none;
+  /* A Twitter-y colour border: 2px solid #3B94D9; */
+  border: 2px solid #0d47a1;
+  -webkit-transition: all 0.28s ease;
+  transition: all 0.28s ease;
+  border-top-left-radius: 10px;
+  border-bottom-left-radius: 10px;
+  font-family: inherit;
+}
 
-        #loading-indicator {
-            font-size: 1.8rem;
-            padding: 20px;
-            display: none;
-        }
+#submit-button {
+  background-color: #0d47a1;
+  font-size: 20px;
+  color: white;
+  height: 3.0rem;
+  padding: 0.5rem 1rem;
+  border-top-right-radius: 10px;
+  border-bottom-right-radius: 10px;
+  border: none;
+  font-family: inherit;
+}
 
-        #tweets-container {
-            padding-top: 10px;
-            display: none;
-        }
+#loading-indicator {
+  font-size: 1.8rem;
+  margin: 50px;
+  padding: 20px;
+  display: none;
+}
 
-        #help-text{
-            padding-top: 5px;
-        }
+#tweets-container {
+  padding-top: 10px;
+  display: none;
+}
+
+#help-text{
+  padding-top: 5px;
+}
+#topBtn {
+  display: none;
+  position: fixed;
+  bottom: 20px;
+  right: 30px;
+  z-index: 99;
+  font-family: inherit;
+  font-size: 18px;
+  border: none;
+  outline: none;
+  background-color: #0d47a1;
+  color: #fff;
+  cursor: pointer;
+  padding: 15px;
+  border-radius: 20px;
+}
+
+#topBtn:hover {
+  opacity: .9;
+}
 
     </style>
+
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
 </head>
 
 <body>
 <h2>#TwitterThrowback</h2>
 See what you've tweeted on this day in the past.
 <form onsubmit="handleFormSubmit(event);">
-    <input id="username-input" type="text" name="username" placeholder="Your Twitter username" required>
+    <input id="username-input" type="text" name="username" placeholder="Your Twitter username" autocomplete="off" required>
     <button id="submit-button" type="submit">Show me</button>
-    <div id="help-text"><small>If your profile is protected🔒, you'll need to <a href="https://help.twitter.com/en/safety-and-security/how-to-make-twitter-private-and-public">unlock it first</a>.</small></div>
+    <div id="help-text"><small>If your profile is protected🔒, you'll need to <a href="https://help.twitter.com/en/safety-and-security/how-to-make-twitter-private-and-public" target="_blank">unlock it first</a>.</small></div>
 </form>
-<small>Developer💻? <a href="//github.com/shalvah/oldtweets.today">Check out the source code</a>👀</small>
+<small>Developer💻? <a href="//github.com/shalvah/oldtweets.today" target="_blank">Check out the source code</a> 👀</small>
 
 <div id="loading-indicator"></div>
 <div id="tweets-container"></div>
+
+<button onclick="backToTop()" id="topBtn" title="Back to top">👆</button>
 
 <script>
     var tweetsContainer = document.getElementById('tweets-container');
@@ -147,7 +184,7 @@ See what you've tweeted on this day in the past.
         event.preventDefault();
         window.username = usernameInput.value;
         window.username = window.username.trim();
-        
+
         history.pushState({ username }, '', '#' + username);
         window.day = (new Date).toLocaleString('en-us', { month: 'long', day: 'numeric' });
 
@@ -204,7 +241,7 @@ See what you've tweeted on this day in the past.
                 // this would be simpler, but I have a suspicion it's slower
                 // return Object.assign({}, ...responses);
 
-                results = responses.reduce((all, r) => {
+                let results = responses.reduce((all, r) => {
                     for (let year in r) {
                         all[year] = r[year];
                     }
@@ -239,5 +276,22 @@ See what you've tweeted on this day in the past.
         }, 1000);
     }
 </script>
-<script async="" src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+<script>
+// When the user scrolls down 30px from the top of the document, show the button
+window.onscroll = () => {scrollDown()};
+
+function scrollDown() {
+  if (document.body.scrollTop > 30 || document.documentElement.scrollTop > 30) {
+    document.getElementById("topBtn").style.display = "block";
+  } else {
+    document.getElementById("topBtn").style.display = "none";
+  }
+}
+
+// When the user clicks on the button, scroll to the top of the document
+function backToTop() {
+  document.body.scrollTop = 0;
+  document.documentElement.scrollTop = 0;
+}
+</script>
 </body>
