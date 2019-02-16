@@ -201,13 +201,16 @@ See what you've tweeted on this day in the past.
         return Promise.all(apiUrls.map(url => fetch(url)))
             .then(responses => Promise.all(responses.map(r => r.json())))
             .then(responses => {
-                responses.forEach(r => {
-                    if (r.error) {
-                        console.log(r.error);
-                        throw 'Something went wrong. Please try again.😭';
+                // this would be simpler, but I have a suspicion it's slower
+                // return Object.assign({}, ...responses);
+
+                results = responses.reduce((all, r) => {
+                    for (let year in r) {
+                        all[year] = r[year];
                     }
-                });
-                return Object.assign({}, ...responses);
+                    return all;
+                }, {});
+                return results;
             })
             .catch(r => {
                 if (r.error) {
