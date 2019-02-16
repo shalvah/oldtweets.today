@@ -111,7 +111,7 @@
         #shareButton {
             display: block;
             position: fixed;
-            bottom: 20px;
+            bottom: 22px;
             left: 30px;
             z-index: 99;
             font-family: inherit;
@@ -125,11 +125,11 @@
             border-radius: 20px;
         }
         #shareButton:hover {
-            color: ghostwhite;
-            cursor: pointer
+            opacity: .9;
         }
         #shareImage {
-
+            width: 25px;
+            height: 25px;
         }
     </style>
 
@@ -156,7 +156,7 @@ See what you've tweeted on this day in the past.
 <div id="loading-indicator"></div>
 <div id="tweets-container"></div>
 
-<button onclick="shareToTwitter()" id="shareButton" title="Share on Twitter"></button>
+<button onclick="shareToTwitter()" id="shareButton" title="Share on Twitter"><img id="shareImage" src="./img/icon-share.svg"></button>
 <button onclick="backToTop()" id="topBtn" title="Back to top">👆</button>
 
 <script>
@@ -312,10 +312,19 @@ See what you've tweeted on this day in the past.
     }
 
     function shareToTwitter() {
-        const url = `http://twitter.com/share?text=Here's my TwitterThrowback. Check yours here` +
-            `&url=http://oldtweets.today/?username=${window.username}&hashtags=OldTweetsToday,TwitterThrowback`;
+        let url;
+        if(window.username !== undefined) {
+            url = `http://twitter.com/share?text=Here's my TwitterThrowback. Check yours here` +
+                `&url=http://oldtweets.today/?username=${window.username}&hashtags=OldTweetsToday,TwitterThrowback`;
+        }
+        else {
+            url = `http://twitter.com/share?text=I just found out this cool site that helps you see your throwback tweets ` +
+                `&url=http://oldtweets.today/&hashtags=OldTweetsToday,TwitterThrowback`;
+        }
         const newWindow = window.open(url, '_blank');
+
         newWindow.focus();
+
     }
 </script>
 <script>
