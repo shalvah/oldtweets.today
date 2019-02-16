@@ -20,6 +20,8 @@
     <style>
         body {
             background: url(trianglify.png);
+            background-repeat: repeat-y;
+            background-size: contain;
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', Calibri, sans-serif;
             padding: 20px;
             display: flex;
@@ -43,7 +45,6 @@
             transition: all 0.28s ease;
             border-top-left-radius: 5px;
             border-bottom-left-radius: 5px;
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', Calibri, sans-serif
         }
 
         #submit-button {
@@ -55,7 +56,7 @@
             border-top-right-radius: 5px;
             border-bottom-right-radius: 5px;
             border: none;
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', Calibri, sans-serif
+            cursor: pointer;
         }
 
         #loading-indicator {
@@ -90,7 +91,8 @@
     // prefill the value if the user is coming from a direct link
     let hash = window.location.hash.split('#')[1];
     if (hash != '') {
-        document.querySelector('input[name="username"]').value = hash;
+        // adding a fallback of an empty string because hash can be undefined
+        document.querySelector('input[name="username"]').value = hash || '';
     } else {
         // or try query string
         let queryString = window.location.search;
