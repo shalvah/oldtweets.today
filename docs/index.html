@@ -160,7 +160,7 @@ See what you've tweeted on this day in the past.
 <div id="tweets-container"></div>
 
 <button onclick="shareToTwitter()" id="shareButton" title="Share on Twitter"><img id="shareImage"
-                                                                                  src="./img/icon-share.svg"></button>
+                                                                                  src="./img/twitter_icon.png"></button>
 <button onclick="backToTop()" id="topBtn" title="Back to top">👆</button>
 
 <script>
@@ -175,7 +175,6 @@ See what you've tweeted on this day in the past.
     let hash = window.location.hash.split('#')[1];
     if (hash != '' && hash != undefined) {
         usernameInput.value = hash;
-        handleFormSubmit() //todo
     } else {
         // Also support query string (oldtweets.today?username=<username>)
         let queryString = window.location.search;
