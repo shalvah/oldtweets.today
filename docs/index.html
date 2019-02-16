@@ -147,7 +147,7 @@ See what you've tweeted on this day in the past.
         event.preventDefault();
         window.username = usernameInput.value;
         window.username = window.username.trim();
-        
+
         history.pushState({ username }, '', '#' + username);
         window.day = (new Date).toLocaleString('en-us', { month: 'long', day: 'numeric' });
 
@@ -171,7 +171,11 @@ See what you've tweeted on this day in the past.
                 if (!hasContent) {
                     throw `Sorry, we couldn't find any tweets by <b>${window.username}</b> on <b>${window.day}</b>😕`;
                 }
-                injectContentIntoPage(tweetsHtml.join("\n"), true);
+
+                const shareDiv = '<div style="position: -webkit-sticky; position: sticky;top: 0; text-align: start;' +
+                    ' margin-top: 10px;"><h6 onclick="shareToTwitter()">Share on Twitter</h6></div>';
+
+                injectContentIntoPage(shareDiv + tweetsHtml.join("\n"), true);
                 document.title = `@${username.replace("@", "")}'s old Tweets`;
             })
             .catch(showError);
@@ -237,6 +241,13 @@ See what you've tweeted on this day in the past.
             loadingIndicator.innerHTML = message;
             loadingIndicator.style.display = 'block';
         }, 1000);
+    }
+
+    function shareToTwitter() {
+        const url = `http://twitter.com/share?text=Here's my TwitterThrowback. Check yours here` +
+            `&url=http://oldtweets.today/#${window.username}&hashtags=OldTweetsToday,TwitterThrowback`;
+        const newWindow = window.open(url, '_blank');
+        newWindow.focus();
     }
 </script>
 <script async="" src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
