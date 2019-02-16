@@ -20,7 +20,8 @@
     <link rel="icon" href="img/favicon.ico" type="image/x-icon"/>
 
     <style>
-        @import url('https://fonts.googleapis.com/css?family=Roboto+mono');
+
+        @import url('https://fonts.googleapis.com/css?family=Roboto+Mono');
 
         body {
             background: url(./img/trianglify.png);
@@ -124,9 +125,11 @@
             padding: 15px;
             border-radius: 20px;
         }
+
         #shareButton:hover {
             opacity: .9;
         }
+
         #shareImage {
             width: 25px;
             height: 25px;
@@ -156,7 +159,8 @@ See what you've tweeted on this day in the past.
 <div id="loading-indicator"></div>
 <div id="tweets-container"></div>
 
-<button onclick="shareToTwitter()" id="shareButton" title="Share on Twitter"><img id="shareImage" src="./img/icon-share.svg"></button>
+<button onclick="shareToTwitter()" id="shareButton" title="Share on Twitter"><img id="shareImage"
+                                                                                  src="./img/icon-share.svg"></button>
 <button onclick="backToTop()" id="topBtn" title="Back to top">👆</button>
 
 <script>
@@ -171,6 +175,7 @@ See what you've tweeted on this day in the past.
     let hash = window.location.hash.split('#')[1];
     if (hash != '' && hash != undefined) {
         usernameInput.value = hash;
+        handleFormSubmit() //todo
     } else {
         // Also support query string (oldtweets.today?username=<username>)
         let queryString = window.location.search;
@@ -313,12 +318,12 @@ See what you've tweeted on this day in the past.
 
     function shareToTwitter() {
         let url;
-        if(window.username !== undefined) {
+        if (window.username !== undefined) {
             url = `http://twitter.com/share?text=Here's my TwitterThrowback. Check yours here` +
                 `&url=http://oldtweets.today/?username=${window.username}&hashtags=OldTweetsToday,TwitterThrowback`;
         }
         else {
-            url = `http://twitter.com/share?text=I just found out this cool site that helps you see your throwback tweets ` +
+            url = `http://twitter.com/share?text=Wanna see what you were tweeting on this day in the past? Check out ` +
                 `&url=http://oldtweets.today/&hashtags=OldTweetsToday,TwitterThrowback`;
         }
         const newWindow = window.open(url, '_blank');
