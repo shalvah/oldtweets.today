@@ -76,7 +76,7 @@
 </head>
 
 <body>
-<h1>Relive your Tweets like they were yesterday.</h1>
+<h2>Relive your Tweets like they were yesterday</h2>
 See what you've tweeted on this day in the past.
 <form onsubmit="handleFormSubmit(event);">
     <input id="username-input" type="text" name="username" placeholder="Your Twitter username" required>
@@ -87,13 +87,14 @@ See what you've tweeted on this day in the past.
 
 <div id="loading-indicator"></div>
 <div id="tweets-container"></div>
+
 <script>
-    // prefill the value if the user is coming from a direct link
+    // prefill the value if the user is coming from a direct link (oldtweets.today/#username)
     let hash = window.location.hash.split('#')[1];
     if (hash != '' && hash != undefined) {
         document.querySelector('input[name="username"]').value = hash;
     } else {
-        // or try query string
+        // or try query string (oldtweets.today?username=<username>)
         let queryString = window.location.search;
         let queryParams = new URLSearchParams(queryString);
         if (queryParams.get('username')) {
@@ -129,7 +130,7 @@ See what you've tweeted on this day in the past.
 
     function emojiLoad() {
         window.loaderInterval = setInterval(() => {
-            let emojis = ['🤔', '📝', '👩‍🏭', '🤗', '🙈', '😸', '🙂'];
+            let emojis = ['🤔', '📝', '👩‍🏭', '🤗', '🙈', '😸', '🙂', '😅', '💪', '😊'];
             loadingIndicator.innerText = `Fetching your tweets from ${day}...just a sec ${emojis[Math.floor(Math.random() * emojis.length)]}`;
         }, 750);
     }
@@ -167,8 +168,6 @@ See what you've tweeted on this day in the past.
                 injectContentIntoPage(tweetsHtml.join("\n"), true);
                 document.title = `@${username.replace("@", "")}'s old Tweets`;
             })
-            // Use a timeout to allow the Twitter library hydrate the tweet DOM elements
-            .then(() => setTimeout(doneWithLoading, 2000))
             .catch(showError);
     }
 
@@ -196,9 +195,9 @@ See what you've tweeted on this day in the past.
 
     /**
      * @param {string} content
-     * @param {boolean} isTwitterResponse
      */
     function injectContentIntoPage(content) {
+        twttr.events.bind('loaded', () => setTimeout(doneWithLoading, 1000));
         let container = document.getElementById('tweets-container');
         container.innerHTML = content;
         twttr.widgets.load(container);
