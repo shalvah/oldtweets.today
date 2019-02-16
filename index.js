@@ -1,13 +1,14 @@
 'use strict';
 
-function getTweetsOnThisDay(username, today = new Date()) {
+function getTweetsOnThisDay(username, { from, until }, today = new Date()) {
     const baseDate = today;
 
     // Generate an array of all the years we're looking for tweets in.
     // Twitter was founded in 2006, so we only need to go as far as that.
+    until = until || 2006;
     const years = Array.from(
-        {length: parseInt(today.getFullYear()) - 2006},
-        (_, i) => 2006 + i
+        {length: parseInt(from) + 1 - parseInt(until)},
+        (_, i) => from - i
     );
 
     const requests = years.map(year => {
@@ -90,7 +91,10 @@ exports.getTweetsOnThisDay = (req, res) => {
             if (offset) {
                 today.setTime(today.getTime() + (-1 * offset * 60 * 1000));
             }
-            return getTweetsOnThisDay(username, today)
+
+            let from = req.query.from || today.getFullYear();
+            let until = req.query.until || null;
+            return getTweetsOnThisDay(username, { from, until }, today)
                 .then(tweets => respond(res, tweets));
         default:
             return respond(res, {error: "Read the fucking docs; it's a GET request."}, 405);

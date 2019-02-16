@@ -181,20 +181,39 @@ See what you've tweeted on this day in the past.
      * @param {string} username
      */
     function getTweetsOnThisDay(username) {
-        const utcOffset = (new Date()).getTimezoneOffset();
-        const apiUrl = `https://europe-west1-tweetedonthisday.cloudfunctions.net/getTweetsOnThisDay?username=${username}&utcOffset=${utcOffset}`;
-        return fetch(apiUrl).then(r => r.json())
-            .then(r => {
-                if (r.error) {
-                    console.log(r.error);
-                    throw 'Something went wrong. Please try again.😭';
-                }
-                return r;
+        const today = new Date();
+        const utcOffset = today.getTimezoneOffset();
+        const baseApiUrl = `https://europe-west1-tweetedonthisday.cloudfunctions.net/getTweetsOnThisDay?username=${username}&utcOffset=${utcOffset}`;
+        let baseYear =today.getFullYear() - 1;
+        let years = [];
+        // request in four-year batches to improve speed
+        while (baseYear > 2005) {
+            let endYear = baseYear - 3;
+            if ((endYear - 2006) < 3) {
+                endYear = 2006;
+            }
+            years.push([baseYear, endYear]);
+            baseYear = endYear - 1;
+        }
+
+        let apiUrls = years.map(yearSet => `${baseApiUrl}&from=${yearSet[0]}&until=${yearSet[1]}`);
+
+        return Promise.all(apiUrls.map(url => fetch(url)))
+            .then(responses => Promise.all(responses.map(r => r.json())))
+            .then(responses => {
+                responses.forEach(r => {
+                    if (r.error) {
+                        console.log(r.error);
+                        throw 'Something went wrong. Please try again.😭';
+                    }
+                });
+                return Object.assign({}, ...responses);
             })
             .catch(r => {
                 if (r.error) {
                     console.log(r.error);
                 }
+                console.log(r);
                 throw 'Something went wrong. Please try again.😭';
             })
     }
