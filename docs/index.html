@@ -89,24 +89,28 @@ See what you've tweeted on this day in the past.
 <div id="tweets-container"></div>
 
 <script>
-    // prefill the value if the user is coming from a direct link (oldtweets.today/#username)
+    var tweetsContainer = document.getElementById('tweets-container');
+    var usernameInput = document.getElementById('username-input');
+    var submitButton = document.getElementById('submit-button');
+    var loadingIndicator = document.getElementById('loading-indicator');
+</script>
+<script>
+    // Prefill the value if the user is coming from a direct link (oldtweets.today/#username)
+    // Normally, I'd want to do this using a path, but GitHub Pages doesn't support routing via paths
     let hash = window.location.hash.split('#')[1];
     if (hash != '' && hash != undefined) {
-        document.querySelector('input[name="username"]').value = hash;
+        usernameInput.value = hash;
     } else {
-        // or try query string (oldtweets.today?username=<username>)
+        // Also support query string (oldtweets.today?username=<username>)
         let queryString = window.location.search;
         let queryParams = new URLSearchParams(queryString);
         if (queryParams.get('username')) {
-            document.querySelector('input[name="username"]').value = queryParams.get('username');
+            usernameInput.value = queryParams.get('username');
         }
     }
 </script>
 
 <script>
-    var loadingIndicator = document.querySelector('#loading-indicator');
-    var submitButton = document.querySelector('#submit-button');
-
     function showLoadingIndicator() {
         submitButton.disabled = true;
         loadThatShit();
@@ -116,14 +120,14 @@ See what you've tweeted on this day in the past.
         clearInterval(window.loaderInterval);
         succesful && (loadingIndicator.innerText = "Done! ✅");
         setTimeout(() => {
-            loadingIndicator.style.display = 'none';
             submitButton.removeAttribute('disabled');
-            window['tweets-container'].style.display = 'block';
+            succesful && (loadingIndicator.style.display = 'none');
+            succesful && (tweetsContainer.style.display = 'block');
         }, 500);
     }
 
     function loadThatShit() {
-        loadingIndicator.innerText = `Fetching your tweets from ${day}...just a sec 🚀`;
+        loadingIndicator.innerText = `Fetching ${window.username}'s tweets from ${day}...just a sec 🚀`;
         loadingIndicator.style.display = 'block';
         emojiLoad();
     }
@@ -131,7 +135,7 @@ See what you've tweeted on this day in the past.
     function emojiLoad() {
         window.loaderInterval = setInterval(() => {
             let emojis = ['🤔', '📝', '👩‍🏭', '🤗', '🙈', '😸', '🙂', '😅', '💪', '😊'];
-            loadingIndicator.innerText = `Fetching your tweets from ${day}...just a sec ${emojis[Math.floor(Math.random() * emojis.length)]}`;
+            loadingIndicator.innerText = `Fetching ${window.username}'s tweets from ${day}...just a sec ${emojis[Math.floor(Math.random() * emojis.length)]}`;
         }, 750);
     }
 </script>
@@ -141,13 +145,15 @@ See what you've tweeted on this day in the past.
      */
     function handleFormSubmit(event) {
         event.preventDefault();
-        let username = event.target.querySelector('input[name="username"]').value;
+        window.username = usernameInput.value;
+        window.username = window.username.trim();
+        
         history.pushState({ username }, '', '#' + username);
         window.day = (new Date).toLocaleString('en-us', { month: 'long', day: 'numeric' });
-        showLoadingIndicator(day);
+
+        showLoadingIndicator();
         // get rid of any existing content
-        window['tweets-container'].innerHTML = '';
-        username = username.trim();
+        tweetsContainer.innerHTML = '';
         getTweetsOnThisDay(username)
             .then(tweets => {
                 let tweetsHtml = [];
@@ -163,7 +169,7 @@ See what you've tweeted on this day in the past.
                 }
 
                 if (!hasContent) {
-                    throw `Sorry, we couldn't find any tweets by <b>@${username}</b> on <b>${day}</b>😕`;
+                    throw `Sorry, we couldn't find any tweets by <b>${window.username}</b> on <b>${window.day}</b>😕`;
                 }
                 injectContentIntoPage(tweetsHtml.join("\n"), true);
                 document.title = `@${username.replace("@", "")}'s old Tweets`;
