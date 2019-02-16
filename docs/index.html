@@ -171,6 +171,7 @@ See what you've tweeted on this day in the past.
     let hash = window.location.hash.split('#')[1];
     if (hash != '' && hash != undefined) {
         usernameInput.value = hash;
+        handleFormSubmit() //todo
     } else {
         // Also support query string (oldtweets.today?username=<username>)
         let queryString = window.location.search;
@@ -318,7 +319,7 @@ See what you've tweeted on this day in the past.
                 `&url=http://oldtweets.today/?username=${window.username}&hashtags=OldTweetsToday,TwitterThrowback`;
         }
         else {
-            url = `http://twitter.com/share?text=I just found out this cool site that helps you see your throwback tweets ` +
+            url = `http://twitter.com/share?text=Wanna see what you were tweeting on this day in the past? Check out ` +
                 `&url=http://oldtweets.today/&hashtags=OldTweetsToday,TwitterThrowback`;
         }
         const newWindow = window.open(url, '_blank');
