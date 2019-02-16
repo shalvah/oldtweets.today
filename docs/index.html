@@ -112,9 +112,9 @@
         loadThatShit();
     }
 
-    function doneWithLoading() {
+    function doneWithLoading(succesful = true) {
         clearInterval(window.loaderInterval);
-        loadingIndicator.innerText = "Done! ✅";
+        succesful && (loadingIndicator.innerText = "Done! ✅");
         setTimeout(() => {
             loadingIndicator.style.display = 'none';
             submitButton.removeAttribute('disabled');
@@ -206,7 +206,7 @@
     }
 
     function showError(message) {
-        doneWithLoading();
+        doneWithLoading(false);
         setTimeout(() => {
             loadingIndicator.innerHTML = message;
             loadingIndicator.style.display = 'block';
