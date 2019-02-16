@@ -88,7 +88,7 @@
 <div id="tweets-container"></div>
 <script>
     // prefill the value if the user is coming from a direct link
-    let hash = window.location.hash.trimLeft('#');
+    let hash = window.location.hash.split('#')[1];
     if (hash != '') {
         document.querySelector('input[name="username"]').value = hash;
     } else {
@@ -139,11 +139,11 @@
      */
     function handleFormSubmit(event) {
         event.preventDefault();
+        let username = event.target.querySelector('input[name="username"]').value;
         window.location.hash = username;
         showLoadingIndicator();
         // get rid of any existing content
         window['tweets-container'].innerHTML = '';
-        let username = event.target.querySelector('input[name="username"]').value;
         username = username.trim();
         getTweetsOnThisDay(username)
             .then(tweets => {
