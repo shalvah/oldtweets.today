@@ -88,9 +88,9 @@
 <div id="tweets-container"></div>
 <script>
     // prefill the value if the user is coming from a direct link
-    let path = window.location.pathname.trimRight('/');
-    if (path != '' && !path.includes('index.html') && !path.includes('/')) {
-        document.querySelector('input[name="username"]').value = path;
+    let hash = window.location.hash;
+    if (hash != '') {
+        document.querySelector('input[name="username"]').value = hash;
     } else {
         // or try query string
         let queryString = window.location.search;
@@ -139,9 +139,10 @@
      */
     function handleFormSubmit(event) {
         event.preventDefault();
+        window.location.hash = username;
+        showLoadingIndicator();
         // get rid of any existing content
         window['tweets-container'].innerHTML = '';
-        showLoadingIndicator();
         let username = event.target.querySelector('input[name="username"]').value;
         username = username.trim();
         getTweetsOnThisDay(username)
@@ -157,7 +158,6 @@
                 }
                 injectContentIntoPage(tweetsHtml.join("\n"), true);
                 document.title = `@${username.replace("@", "")}'s old Tweets`;
-                window.history.pushState({ username },"", username);
             })
             .then(() => setTimeout(doneWithLoading, 1000))
             .catch(injectContentIntoPage);
