@@ -72,6 +72,10 @@
             padding-top: 5px;
         }
 
+        #share-text:hover {
+            color: ghostwhite;
+            cursor: pointer
+        }
     </style>
 </head>
 
@@ -173,7 +177,7 @@ See what you've tweeted on this day in the past.
                 }
 
                 const shareDiv = '<div style="position: -webkit-sticky; position: sticky;top: 0; text-align: start;' +
-                    ' margin-top: 10px;"><h6 onclick="shareToTwitter()">Share on Twitter</h6></div>';
+                    ' margin-top: 10px; "><h6 onclick="shareToTwitter()" id="share-text">Share on Twitter</h6></div>';
 
                 injectContentIntoPage(shareDiv + tweetsHtml.join("\n"), true);
                 document.title = `@${username.replace("@", "")}'s old Tweets`;
