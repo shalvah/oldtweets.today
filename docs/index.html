@@ -186,10 +186,10 @@ See what you've tweeted on this day in the past.
         const baseApiUrl = `https://europe-west1-tweetedonthisday.cloudfunctions.net/getTweetsOnThisDay?username=${username}&utcOffset=${utcOffset}`;
         let baseYear =today.getFullYear() - 1;
         let years = [];
-        // request in four-year batches to improve speed
+        // request in three-year batches to improve speed
         while (baseYear > 2005) {
-            let endYear = baseYear - 3;
-            if ((endYear - 2006) < 3) {
+            let endYear = baseYear - 2;
+            if ((endYear - 2006) < 2) {
                 endYear = 2006;
             }
             years.push([baseYear, endYear]);
