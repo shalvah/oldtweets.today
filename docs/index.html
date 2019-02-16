@@ -127,6 +127,7 @@ See what you've tweeted on this day in the past.
         submitButton.disabled = true;
         loadThatShit();
     }
+
     function doneWithLoading(succesful = true) {
         clearInterval(window.loaderInterval);
         succesful && (loadingIndicator.innerText = "Done! ✅");
@@ -136,11 +137,13 @@ See what you've tweeted on this day in the past.
             succesful && (tweetsContainer.style.display = 'block');
         }, 500);
     }
+
     function loadThatShit() {
         loadingIndicator.innerText = `Fetching ${window.username}'s tweets from ${day}...just a sec 🚀`;
         loadingIndicator.style.display = 'block';
         emojiLoad();
     }
+
     function emojiLoad() {
         window.loaderInterval = setInterval(() => {
             let emojis = ['🤔', '📝', '👩‍🏭', '🤗', '🙈', '😸', '🙂', '😅', '💪', '😊'];
@@ -159,6 +162,7 @@ See what you've tweeted on this day in the past.
 
         history.pushState({ username }, '', '#' + username);
         window.day = (new Date).toLocaleString('en-us', { month: 'long', day: 'numeric' });
+
         showLoadingIndicator();
         // get rid of any existing content
         tweetsContainer.innerHTML = '';
@@ -175,6 +179,7 @@ See what you've tweeted on this day in the past.
                         tweetsHtml.push("</div><br>");
                     }
                 }
+
                 if (!hasContent) {
                     throw `Sorry, we couldn't find any tweets by <b>${window.username}</b> on <b>${window.day}</b>😕`;
                 }
@@ -183,6 +188,7 @@ See what you've tweeted on this day in the past.
             })
             .catch(showError);
     }
+
     /**
      * @param {string} username
      */
@@ -201,12 +207,15 @@ See what you've tweeted on this day in the past.
             years.push([baseYear, endYear]);
             baseYear = endYear - 1;
         }
+
         let apiUrls = years.map(yearSet => `${baseApiUrl}&from=${yearSet[0]}&until=${yearSet[1]}`);
+
         return Promise.all(apiUrls.map(url => fetch(url)))
             .then(responses => Promise.all(responses.map(r => r.json())))
             .then(responses => {
                 // this would be simpler, but I have a suspicion it's slower
                 // return Object.assign({}, ...responses);
+
                 results = responses.reduce((all, r) => {
                     for (let year in r) {
                         all[year] = r[year];
@@ -223,6 +232,7 @@ See what you've tweeted on this day in the past.
                 throw 'Something went wrong. Please try again.😭';
             })
     }
+
     /**
      * @param {string} content
      */
@@ -232,6 +242,7 @@ See what you've tweeted on this day in the past.
         container.innerHTML = content;
         twttr.widgets.load(container);
     }
+
     function showError(message) {
         doneWithLoading(false);
         setTimeout(() => {
