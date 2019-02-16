@@ -2,7 +2,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>#TwitterThrowback</title>
-    <meta name="description"content="See what you've Tweeted on this day in the past.">
+    <meta name="description" content="See what you've Tweeted on this day in the past.">
 
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website">
@@ -17,116 +17,146 @@
     <meta property="twitter:description" content="See what you've Tweeted on this day in the past.">
 
     <!--favicon-->
-    <link rel="icon" href="img/favicon.ico" type="image/x-icon" />
+    <link rel="icon" href="img/favicon.ico" type="image/x-icon"/>
 
     <style>
-    @import url('https://fonts.googleapis.com/css?family=Roboto+mono');
+        @import url('https://fonts.googleapis.com/css?family=Roboto+mono');
 
-body {
-  background: url(./img/trianglify.png);
-  font-family: 'Roboto Mono', monospace;
-  font-size: 1.5em;
-  padding: 20px;
-  display: flex;
-  flex-direction: column;
-  text-align: center;
-}
-a {
-  text-decoration: none;
-}
-a:hover {
-  border: 1px dotted #000;
-  padding: 3px;
-  border-radius: 10px;
-}
+        body {
+            background: url(./img/trianglify.png);
+            font-family: 'Roboto Mono', monospace;
+            font-size: 1.5em;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            text-align: center;
+        }
 
-#username-input {
-  margin: 25px 0 25px 25px;
-  height: 3.0rem;
-  background: none;
-  padding: 0.5rem 0.5rem;
-  font-size: 20px;
-  width: 50%;
-  outline: none;
-  /* A Twitter-y colour border: 2px solid #3B94D9; */
-  border: 2px solid #0d47a1;
-  -webkit-transition: all 0.28s ease;
-  transition: all 0.28s ease;
-  border-top-left-radius: 10px;
-  border-bottom-left-radius: 10px;
-  font-family: inherit;
-}
+        a {
+            text-decoration: none;
+        }
 
-#submit-button {
-  background-color: #0d47a1;
-  font-size: 20px;
-  color: white;
-  height: 3.0rem;
-  padding: 0.5rem 1rem;
-  border-top-right-radius: 10px;
-  border-bottom-right-radius: 10px;
-  border: none;
-  font-family: inherit;
-}
+        a:hover {
+            border: 1px dotted #000;
+            padding: 3px;
+            border-radius: 10px;
+        }
 
-#loading-indicator {
-  font-size: 1.8rem;
-  margin: 50px;
-  padding: 20px;
-  display: none;
-}
+        #username-input {
+            margin: 25px 0 25px 25px;
+            height: 3.0rem;
+            background: none;
+            padding: 0.5rem 0.5rem;
+            font-size: 20px;
+            width: 50%;
+            outline: none;
+            /* A Twitter-y colour border: 2px solid #3B94D9; */
+            border: 2px solid #0d47a1;
+            -webkit-transition: all 0.28s ease;
+            transition: all 0.28s ease;
+            border-top-left-radius: 10px;
+            border-bottom-left-radius: 10px;
+            font-family: inherit;
+        }
 
-#tweets-container {
-  padding-top: 10px;
-  display: none;
-}
+        #submit-button {
+            background-color: #0d47a1;
+            font-size: 20px;
+            color: white;
+            height: 3.0rem;
+            padding: 0.5rem 1rem;
+            border-top-right-radius: 10px;
+            border-bottom-right-radius: 10px;
+            border: none;
+            font-family: inherit;
+        }
 
-#help-text{
-  padding-top: 5px;
-}
-#topBtn {
-  display: none;
-  position: fixed;
-  bottom: 20px;
-  right: 30px;
-  z-index: 99;
-  font-family: inherit;
-  font-size: 18px;
-  border: none;
-  outline: none;
-  background-color: #0d47a1;
-  color: #fff;
-  cursor: pointer;
-  padding: 15px;
-  border-radius: 20px;
-}
+        #loading-indicator {
+            font-size: 1.8rem;
+            margin: 50px;
+            padding: 20px;
+            display: none;
+        }
 
-#topBtn:hover {
-  opacity: .9;
-}
+        #tweets-container {
+            padding-top: 10px;
+            display: none;
+        }
 
-        #share-text:hover {
+        #help-text {
+            padding-top: 5px;
+        }
+
+        #topBtn {
+            display: none;
+            position: fixed;
+            bottom: 20px;
+            right: 30px;
+            z-index: 99;
+            font-family: inherit;
+            font-size: 18px;
+            border: none;
+            outline: none;
+            background-color: #0d47a1;
+            color: #fff;
+            cursor: pointer;
+            padding: 15px;
+            border-radius: 20px;
+        }
+
+        #topBtn:hover {
+            opacity: .9;
+        }
+
+        #shareButton {
+            display: block;
+            position: fixed;
+            bottom: 20px;
+            left: 30px;
+            z-index: 99;
+            font-family: inherit;
+            font-size: 18px;
+            border: none;
+            outline: none;
+            background: #0d47a1;
+            color: #fff;
+            cursor: pointer;
+            padding: 15px;
+            border-radius: 20px;
+        }
+        #shareButton:hover {
             color: ghostwhite;
             cursor: pointer
         }
+        #shareImage {
+
+        }
     </style>
 
-<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+    <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
 </head>
 
 <body>
 <h2>#TwitterThrowback</h2>
 See what you've tweeted on this day in the past.
 <form onsubmit="handleFormSubmit(event);">
-    <input id="username-input" type="text" name="username" placeholder="Your Twitter username" autocomplete="off" required>
+    <input id="username-input" type="text" name="username" placeholder="Your Twitter username" autocomplete="off"
+           required>
     <button id="submit-button" type="submit">Show me</button>
-    <div id="help-text"><small>If your profile is protected🔒, you'll need to <a href="https://help.twitter.com/en/safety-and-security/how-to-make-twitter-private-and-public" target="_blank">unlock it first</a>.</small></div>
+    <div id="help-text">
+        <small>If your profile is protected🔒, you'll need to <a
+                href="https://help.twitter.com/en/safety-and-security/how-to-make-twitter-private-and-public"
+                target="_blank">unlock it first</a>.
+        </small>
+    </div>
 </form>
-<small>Developer💻? <a href="//github.com/shalvah/oldtweets.today" target="_blank">Check out the source code</a> 👀</small>
+<small>Developer💻? <a href="//github.com/shalvah/oldtweets.today" target="_blank">Check out the source code</a> 👀
+</small>
 
 <div id="loading-indicator"></div>
 <div id="tweets-container"></div>
 
+<button onclick="shareToTwitter()" id="shareButton" title="Share on Twitter"></button>
 <button onclick="backToTop()" id="topBtn" title="Back to top">👆</button>
 
 <script>
@@ -189,8 +219,8 @@ See what you've tweeted on this day in the past.
         window.username = usernameInput.value;
         window.username = window.username.trim();
 
-        history.pushState({ username }, '', '#' + username);
-        window.day = (new Date).toLocaleString('en-us', { month: 'long', day: 'numeric' });
+        history.pushState({username}, '', '#' + username);
+        window.day = (new Date).toLocaleString('en-us', {month: 'long', day: 'numeric'});
 
         showLoadingIndicator();
         // get rid of any existing content
@@ -213,10 +243,7 @@ See what you've tweeted on this day in the past.
                     throw `Sorry, we couldn't find any tweets by <b>${window.username}</b> on <b>${window.day}</b>😕`;
                 }
 
-                const shareDiv = '<div style="position: -webkit-sticky; position: sticky;top: 0; text-align: start;' +
-                    ' margin-top: 10px; "><h6 onclick="shareToTwitter()" id="share-text">Share on Twitter</h6></div>';
-
-                injectContentIntoPage(shareDiv + tweetsHtml.join("\n"), true);
+                injectContentIntoPage(tweetsHtml.join("\n"), true);
                 document.title = `@${username.replace("@", "")}'s old Tweets`;
             })
             .catch(showError);
@@ -229,7 +256,7 @@ See what you've tweeted on this day in the past.
         const today = new Date();
         const utcOffset = today.getTimezoneOffset();
         const baseApiUrl = `https://europe-west1-tweetedonthisday.cloudfunctions.net/getTweetsOnThisDay?username=${username}&utcOffset=${utcOffset}`;
-        let baseYear =today.getFullYear() - 1;
+        let baseYear = today.getFullYear() - 1;
         let years = [];
         // request in three-year batches to improve speed
         while (baseYear > 2005) {
@@ -292,21 +319,23 @@ See what you've tweeted on this day in the past.
     }
 </script>
 <script>
-// When the user scrolls down 30px from the top of the document, show the button
-window.onscroll = () => {scrollDown()};
+    // When the user scrolls down 30px from the top of the document, show the button
+    window.onscroll = () => {
+        scrollDown()
+    };
 
-function scrollDown() {
-  if (document.body.scrollTop > 30 || document.documentElement.scrollTop > 30) {
-    document.getElementById("topBtn").style.display = "block";
-  } else {
-    document.getElementById("topBtn").style.display = "none";
-  }
-}
+    function scrollDown() {
+        if (document.body.scrollTop > 30 || document.documentElement.scrollTop > 30) {
+            document.getElementById("topBtn").style.display = "block";
+        } else {
+            document.getElementById("topBtn").style.display = "none";
+        }
+    }
 
-// When the user clicks on the button, scroll to the top of the document
-function backToTop() {
-  document.body.scrollTop = 0;
-  document.documentElement.scrollTop = 0;
-}
+    // When the user clicks on the button, scroll to the top of the document
+    function backToTop() {
+        document.body.scrollTop = 0;
+        document.documentElement.scrollTop = 0;
+    }
 </script>
 </body>
