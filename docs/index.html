@@ -18,11 +18,16 @@
 
     <!--favicon-->
     <link rel="icon" href="img/favicon.ico" type="image/x-icon"/>
-
+    
     <style>
-
         @import url('https://fonts.googleapis.com/css?family=Roboto+Mono');
-        
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+ 
         html{ 
             scroll-behavior: smooth;
         }
@@ -31,10 +36,11 @@
             background: url(./img/trianglify.png);
             font-family: 'Roboto Mono', monospace;
             font-size: 1.5em;
-            padding: 20px;
+            padding: 50px 20px;
             display: flex;
             flex-direction: column;
             text-align: center;
+            width: 100vw;
         }
 
         a {
@@ -47,13 +53,18 @@
             border-radius: 10px;
         }
 
+        .input-group {
+            display: flex;
+            width: 50%;
+            margin: 32px auto;
+        }
+
         #username-input {
-            margin: 25px 0 25px 25px;
+            flex: 1;
             height: 3.0rem;
             background: none;
             padding: 0.5rem 0.5rem;
             font-size: 20px;
-            width: 50%;
             outline: none;
             /* A Twitter-y colour border: 2px solid #3B94D9; */
             border: 2px solid #0d47a1;
@@ -138,8 +149,29 @@
             width: 25px;
             height: 25px;
         }
-    </style>
 
+        @media screen and (max-width: 600px) {
+            h2 {
+                font-size: 120%;
+            }
+
+            .input-group {
+                flex-direction: column;
+                width: 95%;
+            }
+
+            .input-group * {
+                border-radius: 10px;
+                margin-bottom: 10px;
+            }
+        }
+
+        @media screen and (min-width: 601px) and (max-width: 800px) {
+            .input-group {
+                width: 70%;
+            }
+        }
+    </style>
     <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
 </head>
 
@@ -147,9 +179,11 @@
 <h2>#TwitterThrowback</h2>
 See what you've tweeted on this day in the past.
 <form onsubmit="handleFormSubmit(event);">
-    <input id="username-input" type="text" name="username" placeholder="Your Twitter username" autocomplete="off"
-           required>
-    <button id="submit-button" type="submit">Show me</button>
+    <div class="input-group">
+        <input id="username-input" type="text" name="username" placeholder="Your Twitter username" autocomplete="off"
+               required>
+        <button id="submit-button" type="submit">Show me</button>
+    </div>
     <div id="help-text">
         <small>If your profile is protected🔒, you'll need to <a
                 href="https://help.twitter.com/en/safety-and-security/how-to-make-twitter-private-and-public"
