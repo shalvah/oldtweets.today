@@ -64,6 +64,8 @@
             flex-direction: column;
             font-family: 'Maven Pro', sans-serif;
             justify-content: center;
+            margin: 0 auto;
+            max-width: 750px;
             min-height: 100%;
             padding: 50px;
             transition: 0.3s;
@@ -148,6 +150,7 @@
             height: 50px;
             line-height: 20px;
             outline: none;
+            overflow: hidden;
             padding: 15px;
             position: relative;
             width: 120px;
@@ -160,7 +163,6 @@
 
         .form__button[disabled]:after{
             background: #1B95E0;
-            border-radius: 0 5px 5px 0;
             content: "loading . . .";
             display: block;
             height: 100%;
@@ -234,8 +236,8 @@
             font-size: 13px;
             line-height: 25px;
             margin-left: 5px;
-            transition: 0.5s;
             overflow: hidden;
+            transition: 0.5s;
             white-space: nowrap;
             width: 0;
         }
@@ -261,6 +263,83 @@
 
         .to-top span{
             margin-left: 5px;
+        }
+
+        /* RESPONSIVE STYLING FOR 767PX AND BELOW */
+
+        @media (max-width: 767px) {
+
+            body{
+                margin: 0;
+                padding: 0;
+                font-size: 14px;
+                text-align: center;
+            }
+
+            .wrapper{
+                max-width: 500px;
+                min-height: 100%;
+                padding: 50px 20px;
+            }
+
+            .wrapper.successful{
+                padding: 20px 20px 50px;
+            }
+
+            .wrapper h2{
+                font-size: 30px;
+                line-height: 40px;
+            }
+
+            .wrapper h3{
+                font-size: 17px;
+                line-height: 25px;
+            }
+
+            .form__input{
+                border: 1px solid rgba(0, 0, 0, 0.25);
+                border-radius: 5px;
+                margin: 0 0 10px;
+                width: 100%;
+            }
+
+            .form__button{
+                border-radius: 5px;
+                width: 100%;
+            }
+
+            .help-text{
+                font-size: 14px;
+                line-height: 1.5em;
+            }
+
+            .loading{
+                font-size: 14px;
+                margin: 20px auto 0;
+                padding: 10px;
+            }
+
+            .share,
+            .to-top{
+                bottom: 5px;
+                font-size: 12px;
+                height: 40px;
+                width: 40px;
+            }
+
+            .share{
+                left: 5px;
+            }
+
+            .share img{
+                display: inline-block;
+                margin-left: 5px;
+                width: 15px;
+            }
+
+            .to-top{
+                right: 5px;
+            }
         }
     </style>
 
