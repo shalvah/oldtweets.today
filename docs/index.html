@@ -21,13 +21,7 @@
     <link rel="icon" href="img/favicon.ico" type="image/x-icon"/>
 
     <style>
-        #tweets-container {
-            padding-top: 10px;
-            display: none;
-        }
-    </style>
 
-    <style>
         html{
             scroll-behavior: smooth;
         }
@@ -75,7 +69,7 @@
             padding: 20px 50px 50px;
         }
 
-        .wrapper.successful h3,
+        .wrapper.successful h3.intro-text,
         .wrapper.successful .help-text{
             display: none;
         }
@@ -92,18 +86,26 @@
             text-align: center;
         }
 
-        .wrapper h2{
+        h1{
+            font-size: 25px;
+            font-weight: 500;
+            line-height: 35px;
+            margin: 0 0 25px;
+            padding: 0;
+        }
+
+        h2{
             color: #1B95E0;
             font-size: 35px;
             line-height: 45px;
             margin: 0 0 10px;
         }
 
-        .wrapper h2 span{
+        h2 span{
             font-weight: 500;
         }
 
-        .wrapper h3{
+        h3{
             font-size: 20px;
             line-height: 30px;
         }
@@ -200,6 +202,14 @@
             color: #E25E5E;
         }
 
+        #tweets-container {
+            display: none;
+        }
+
+        .section-year{
+            padding: 25px 0;
+        }
+
         .share,
         .to-top{
             background: #1B95E0;
@@ -221,6 +231,7 @@
             display: flex;
             justify-content: center;
             left: 20px;
+            opacity: 0.65;
         }
 
         .share img{
@@ -242,12 +253,18 @@
             width: 0;
         }
 
-        .share:hover:after{
-            width: calc(100% - 35px);
+        .share:hover{
+            opacity: 1;
+            width: 150px;
         }
 
-        .share:hover{
-            width: 150px;
+        .share:hover,
+        .to-top.visible:hover{
+            opacity: 1;
+        }
+
+        .share:hover:after{
+            width: calc(100% - 35px);
         }
 
         .to-top{
@@ -257,7 +274,7 @@
         }
 
         .to-top.visible{
-            opacity: 1;
+            opacity: 0.65;
             visibility: visible;
         }
 
@@ -350,7 +367,7 @@
 <section id="site-wrapper" class="wrapper">
     <header>
         <h2>#Twitter<span>Throwback</span></h2>
-        <h3>See what you've tweeted on this day in the past.</h3>
+        <h3 class="intro-text">See what you've tweeted on this day in the past.</h3>
     </header>
     <main>
         <form onsubmit="handleFormSubmit(event);" class="form">
@@ -451,10 +468,10 @@
                 for (let year of Object.keys(tweets).reverse()) {
                     if (tweets[year].length) {
                         hasContent = true;
-                        tweetsHtml.push(`<div>`);
-                        tweetsHtml.push(`<h3>${year}</h3>`);
+                        tweetsHtml.push(`<section class="section-year">`);
+                        tweetsHtml.push(`<h1 class="year">${year}</h1>`);
                         tweetsHtml.push(tweets[year].join("\n"));
-                        tweetsHtml.push("</div><br>");
+                        tweetsHtml.push("</section>");
                     }
                 }
 
