@@ -1,8 +1,9 @@
 <head>
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <title>#TwitterThrowback</title>
     <meta name="description" content="See what you've Tweeted on this day in the past.">
+    <link href="https://fonts.googleapis.com/css?family=Maven+Pro:400,500" rel="stylesheet">
 
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website">
@@ -20,119 +21,246 @@
     <link rel="icon" href="img/favicon.ico" type="image/x-icon"/>
 
     <style>
-
-        @import url('https://fonts.googleapis.com/css?family=Roboto+Mono');
-
-        body {
-            background: url(./img/trianglify.png);
-            font-family: 'Roboto Mono', monospace;
-            font-size: 1.5em;
-            padding: 20px;
-            display: flex;
-            flex-direction: column;
-            text-align: center;
-        }
-
-        a {
-            text-decoration: none;
-        }
-
-        a:hover {
-            border: 1px dotted #000;
-            padding: 3px;
-            border-radius: 10px;
-        }
-
-        #username-input {
-            margin: 25px 0 25px 25px;
-            height: 3.0rem;
-            background: none;
-            padding: 0.5rem 0.5rem;
-            font-size: 20px;
-            width: 50%;
-            outline: none;
-            /* A Twitter-y colour border: 2px solid #3B94D9; */
-            border: 2px solid #0d47a1;
-            -webkit-transition: all 0.28s ease;
-            transition: all 0.28s ease;
-            border-top-left-radius: 10px;
-            border-bottom-left-radius: 10px;
-            font-family: inherit;
-        }
-
-        #submit-button {
-            background-color: #0d47a1;
-            font-size: 20px;
-            color: white;
-            height: 3.0rem;
-            padding: 0.5rem 1rem;
-            border-top-right-radius: 10px;
-            border-bottom-right-radius: 10px;
-            border: none;
-            font-family: inherit;
-        }
-
-        #loading-indicator {
-            font-size: 1.8rem;
-            margin: 50px;
-            padding: 20px;
-            display: none;
-        }
-
         #tweets-container {
             padding-top: 10px;
             display: none;
         }
+    </style>
 
-        #help-text {
-            padding-top: 5px;
+    <style>
+        html{
+            scroll-behavior: smooth;
         }
 
-        #topBtn {
+        body{
+            margin: 0;
+            padding: 0;
+            font-size: 15px;
+            text-align: center;
+        }
+
+        *{
+            box-sizing: border-box;
+        }
+
+        a{
+            color: #1B95E0;
+            font-weight: 500;
+            text-decoration: none;
+            transition: 0.3s;
+        }
+
+        a:hover{
+            color: #525759;
+        }
+
+        b{
+            font-weight: 500;
+        }
+
+        .wrapper{
+            color: #525759;
+            display: flex;
+            flex-direction: column;
+            font-family: 'Maven Pro', sans-serif;
+            justify-content: center;
+            min-height: 100%;
+            padding: 50px;
+            transition: 0.3s;
+        }
+
+        .wrapper.successful{
+            padding: 20px 50px 50px;
+        }
+
+        .wrapper.successful h3,
+        .wrapper.successful .help-text{
             display: none;
-            position: fixed;
-            bottom: 20px;
-            right: 30px;
-            z-index: 99;
-            font-family: inherit;
-            font-size: 18px;
-            border: none;
+        }
+
+        .wrapper.successful .form{
+            max-width: 500px;
+        }
+
+        .wrapper h2,
+        .wrapper h3{
+            font-weight: 400;
+            margin: 0 0 25px;
+            padding: 0;
+            text-align: center;
+        }
+
+        .wrapper h2{
+            color: #1B95E0;
+            font-size: 35px;
+            line-height: 45px;
+            margin: 0 0 10px;
+        }
+
+        .wrapper h2 span{
+            font-weight: 500;
+        }
+
+        .wrapper h3{
+            font-size: 20px;
+            line-height: 30px;
+        }
+
+        .form{
+            margin: 0 auto 25px;
+            max-width: 650px;
+            overflow: hidden;
+        }
+
+        .form__input{
+            background: #ffffff;
+            border: 1px solid rgba(0, 0, 0, 0.25);
+            border-radius: 5px 0 0 5px;
+            border-right: none;
+            color: #525759;
+            display: inline-block;
+            float: left;
+            font-family: 'Maven Pro', sans-serif;
+            font-size: 16px;
+            height: 50px;
+            line-height: 20px;
+            max-width: 100%;
             outline: none;
-            background-color: #0d47a1;
-            color: #fff;
-            cursor: pointer;
             padding: 15px;
-            border-radius: 20px;
+            transition: 0.3s ease-in-out;
+            width: calc(100% - 120px);
         }
 
-        #topBtn:hover {
-            opacity: .9;
+        .form__input:focus{
+            border-color: #1B95E0;
         }
 
-        #shareButton {
+        .form__button{
+            background: #1B95E0;
+            border: none;
+            border-radius: 0 5px 5px 0;
+            color: #ffffff;
+            cursor: pointer;
+            display: inline-block;
+            float: left;
+            font-family: 'Maven Pro', sans-serif;
+            font-size: 16px;
+            height: 50px;
+            line-height: 20px;
+            outline: none;
+            padding: 15px;
+            position: relative;
+            width: 120px;
+        }
+
+        .form__button[disabled]{
+            opacity: 0.65;
+            cursor: no-drop;
+        }
+
+        .form__button[disabled]:after{
+            background: #1B95E0;
+            border-radius: 0 5px 5px 0;
+            content: "loading . . .";
             display: block;
-            position: fixed;
-            bottom: 22px;
-            left: 30px;
-            z-index: 99;
-            font-family: inherit;
+            height: 100%;
+            position: absolute;
+            top: 0;
+            left: 0;
+            line-height: 50px;
+            width: 100%;
+        }
+
+        .help-text{
             font-size: 18px;
+            font-weight: 400;
+            margin: 0 0 15px;
+            text-align: center;
+        }
+
+        .loading{
+            border: 1px solid transparent;
+            border-radius: 5px;
+            display: none;
+            font-size: 16px;
+            line-height: 20px;
+            margin: 50px auto 0;
+            max-width: 650px;
+            padding: 14px;
+        }
+
+        .loading.show{
+            display: block;
+        }
+
+        .loading.error{
+            border-color: #E25E5E;
+            color: #E25E5E;
+        }
+
+        .share,
+        .to-top{
+            background: #1B95E0;
             border: none;
-            outline: none;
-            background: #0d47a1;
-            color: #fff;
+            border-radius: 25px;
+            bottom: 20px;
             cursor: pointer;
-            padding: 15px;
-            border-radius: 20px;
+            font-size: 16px;
+            height: 50px;
+            outline: none;
+            position: fixed;
+            text-align: center;
+            transition: 0.3s;
+            width: 50px;
         }
 
-        #shareButton:hover {
-            opacity: .9;
+        .share{
+            align-items: center;
+            display: flex;
+            justify-content: center;
+            left: 20px;
         }
 
-        #shareImage {
-            width: 25px;
-            height: 25px;
+        .share img{
+            display: inline-block;
+            width: 20px;
+        }
+
+        .share:after{
+            content: attr(title);
+            color: #ffffff;
+            display: inline-block;
+            font-family: 'Maven Pro', sans-serif;
+            font-size: 13px;
+            line-height: 25px;
+            margin-left: 5px;
+            transition: 0.5s;
+            overflow: hidden;
+            white-space: nowrap;
+            width: 0;
+        }
+
+        .share:hover:after{
+            width: calc(100% - 35px);
+        }
+
+        .share:hover{
+            width: 150px;
+        }
+
+        .to-top{
+            opacity: 0;
+            right: 20px;
+            visibility: hidden;
+        }
+
+        .to-top.visible{
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .to-top span{
+            margin-left: 5px;
         }
     </style>
 
@@ -140,30 +268,36 @@
 </head>
 
 <body>
-<h2>#TwitterThrowback</h2>
-See what you've tweeted on this day in the past.
-<form onsubmit="handleFormSubmit(event);">
-    <input id="username-input" type="text" name="username" placeholder="Your Twitter username" autocomplete="off"
-           required>
-    <button id="submit-button" type="submit">Show me</button>
-    <div id="help-text">
-        <small>If your profile is protected🔒, you'll need to <a
-                href="https://help.twitter.com/en/safety-and-security/how-to-make-twitter-private-and-public"
-                target="_blank">unlock it first</a>.
-        </small>
-    </div>
-</form>
-<small>Developer💻? <a href="//github.com/shalvah/oldtweets.today" target="_blank">Check out the source code</a> 👀
-</small>
+<section id="site-wrapper" class="wrapper">
+    <header>
+        <h2>#Twitter<span>Throwback</span></h2>
+        <h3>See what you've tweeted on this day in the past.</h3>
+    </header>
+    <main>
+        <form onsubmit="handleFormSubmit(event);" class="form">
+            <input id="username-input" type="text" name="username" autofocus class="form__input" placeholder="Your Twitter username" autocomplete="off" required>
+            <button id="submit-button" class="form__button" type="submit">Show me</button>
+        </form>
+        <aside class="help-text">
+            If your profile is protected 🔒, you'll need to <a href="https://help.twitter.com/en/safety-and-security/how-to-make-twitter-private-and-public" target="_blank">unlock it first</a>.
+        </aside>
+        <aside class="help-text">
+            Developer 💻? <a href="//github.com/shalvah/oldtweets.today" target="_blank">Check out the source code</a> 👀
+        </aside>
 
-<div id="loading-indicator"></div>
-<div id="tweets-container"></div>
+        <aside id="loading-indicator" class="loading"></aside>
 
-<button onclick="shareToTwitter()" id="shareButton" title="Share on Twitter"><img id="shareImage"
-                                                                                  src="./img/twitter_icon.png"></button>
-<button onclick="backToTop()" id="topBtn" title="Back to top">👆</button>
+        <section id="tweets-container"></section>
+    </main>
+</section>
+
+<button onclick="shareToTwitter()" id="shareButton" class="share" title="Share on Twitter">
+    <img src="./img/twitter-icon.svg">
+</button>
+<button onclick="backToTop()" id="topBtn" class="to-top" title="Back to top"><span>👆</span></button>
 
 <script>
+    var siteWrapper = document.getElementById('site-wrapper');
     var tweetsContainer = document.getElementById('tweets-container');
     var usernameInput = document.getElementById('username-input');
     var submitButton = document.getElementById('submit-button');
@@ -196,14 +330,16 @@ See what you've tweeted on this day in the past.
         succesful && (loadingIndicator.innerText = "Done! ✅");
         setTimeout(() => {
             submitButton.removeAttribute('disabled');
-            succesful && (loadingIndicator.style.display = 'none');
+            succesful && (loadingIndicator.classList.remove('show'));
             succesful && (tweetsContainer.style.display = 'block');
-        }, 500);
+            succesful && (siteWrapper.classList.add('successful'));
+        }, 1000);
     }
 
     function loadThatShit() {
         loadingIndicator.innerText = `Fetching ${window.username}'s tweets from ${day}...just a sec 🚀`;
-        loadingIndicator.style.display = 'block';
+        loadingIndicator.classList.add('show');
+        loadingIndicator.classList.remove('error');
         emojiLoad();
     }
 
@@ -310,8 +446,8 @@ See what you've tweeted on this day in the past.
     function showError(message) {
         doneWithLoading(false);
         setTimeout(() => {
+            loadingIndicator.classList.add('error', 'show');
             loadingIndicator.innerHTML = message;
-            loadingIndicator.style.display = 'block';
         }, 1000);
     }
 
@@ -339,9 +475,9 @@ See what you've tweeted on this day in the past.
 
     function scrollDown() {
         if (document.body.scrollTop > 30 || document.documentElement.scrollTop > 30) {
-            document.getElementById("topBtn").style.display = "block";
+            document.getElementById("topBtn").classList.add('visible');
         } else {
-            document.getElementById("topBtn").style.display = "none";
+            document.getElementById("topBtn").classList.remove("visible");
         }
     }
 
