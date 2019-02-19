@@ -286,14 +286,15 @@ See what you've tweeted on this day in the past.
         event.preventDefault();
         window.username = usernameInput.value;
         window.username = window.username.trim();
+        window.dateValue = date.value || new Date();
 
         history.pushState({username}, '', '#' + username);
-        window.day = (new Date).toLocaleString('en-us', {month: 'long', day: 'numeric'});
+        window.day = (new Date(dateValue)).toLocaleString('en-us', {month: 'long', day: 'numeric'});
 
         showLoadingIndicator();
         // get rid of any existing content
         tweetsContainer.innerHTML = '';
-        getTweetsOnThisDay(username)
+        getTweetsOnThisDay(username, dateValue)
             .then(tweets => {
                 let tweetsHtml = [];
                 let hasContent = false;
@@ -320,11 +321,11 @@ See what you've tweeted on this day in the past.
     /**
      * @param {string} username
      */
-    function getTweetsOnThisDay(username) {
+    function getTweetsOnThisDay(username, date) {
         const today = new Date();
         const utcOffset = today.getTimezoneOffset();
-        const baseApiUrl = `https://europe-west1-tweetedonthisday.cloudfunctions.net/getTweetsOnThisDay?username=${username}&utcOffset=${utcOffset}`;
-        let baseYear = today.getFullYear() - 1;
+        const baseApiUrl = `https://europe-west1-tweetedonthisday.cloudfunctions.net/getTweetsOnThisDay?username=${username}&utcOffset=${utcOffset}&date=${date}`;
+        let baseYear = today.getFullYear();
         let years = [];
         // request in three-year batches to improve speed
         while (baseYear > 2005) {
