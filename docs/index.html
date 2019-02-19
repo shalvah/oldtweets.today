@@ -27,6 +27,9 @@
             padding: 0;
             box-sizing: border-box;
         }
+
+        ::-webkit-datetime-edit-fields-wrapper { background: transparent; }
+        ::-webkit-inner-spin-button { display: none; }
  
         html{ 
             scroll-behavior: smooth;
@@ -56,25 +59,29 @@
         }
 
         .input-group {
-            display: flex;
+            display: grid;
+            grid-template-columns: 1fr 190px auto;
             width: 50%;
             margin: 32px auto;
         }
 
-        #username-input {
-            flex: 1;
-            height: 3.0rem;
+        .input-group > input {
+            padding: 0.5rem;
             background: none;
-            padding: 0.5rem 0.5rem;
-            font-size: 20px;
             outline: none;
+            border: 2px solid #0d47a1;
+            font-size: 20px;
+            font-family: inherit;
+        }
+
+        #username-input {
+            font-size: 20px;
             /* A Twitter-y colour border: 2px solid #3B94D9; */
             border: 2px solid #0d47a1;
             -webkit-transition: all 0.28s ease;
             transition: all 0.28s ease;
             border-top-left-radius: 10px;
             border-bottom-left-radius: 10px;
-            font-family: inherit;
         }
 
         #submit-button {
@@ -83,11 +90,12 @@
             color: white;
             height: 3.0rem;
             padding: 0.5rem 1rem;
-	    cursor: pointer;
+            cursor: pointer;
             border-top-right-radius: 10px;
             border-bottom-right-radius: 10px;
             border: none;
             font-family: inherit;
+            min-width: 120px;
         }
 
         #loading-indicator {
@@ -159,7 +167,7 @@
             }
 
             .input-group {
-                flex-direction: column;
+                grid-template-columns: 1fr;
                 width: 95%;
             }
 
@@ -171,7 +179,14 @@
 
         @media screen and (min-width: 601px) and (max-width: 800px) {
             .input-group {
-                width: 70%;
+                width: 100%;
+            }
+        }
+
+        @media screen and (min-width: 601px) {
+            #date-input {
+                border-left: none;
+                border-right: none;
             }
         }
     </style>
@@ -185,6 +200,7 @@ See what you've tweeted on this day in the past.
     <div class="input-group">
         <input id="username-input" type="text" name="username" placeholder="Your Twitter username" autocomplete="off"
                required>
+        <input id="date-input" type="date">
         <button id="submit-button" type="submit">Show me</button>
     </div>
     <div id="help-text">
@@ -203,6 +219,13 @@ See what you've tweeted on this day in the past.
 <button onclick="shareToTwitter()" id="shareButton" title="Share on Twitter">
 <img id="shareImage" src="./img/twitter_icon.png"></button>
 <button onclick="backToTop()" id="topBtn" title="Back to top">👆</button>
+
+<script>
+    // Set the default date input value to today
+    var date = document.getElementById('date-input');
+    var today = new Date().toISOString().substr(0, 10);
+    date.value = today;
+</script>
 
 <script>
     var tweetsContainer = document.getElementById('tweets-container');
