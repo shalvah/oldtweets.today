@@ -271,9 +271,10 @@ See what you've tweeted on this day in the past.
 
 <script>
     // Set the default date input value to today
-    var date = document.getElementById('date-input');
-    var today = new Date().toISOString().substr(0, 10);
-    date.value = today;
+    var month = document.getElementById('month');
+    var day = document.getElementById('day');
+    month.value = new Date().getMonth() + 1;
+    day.value = new Date().getDate();
 </script>
 
 <script>
