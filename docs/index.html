@@ -272,9 +272,9 @@ See what you've tweeted on this day in the past.
 <script>
     // Set the default date input value to today
     var month = document.getElementById('month');
-    var day = document.getElementById('day');
+    var date = document.getElementById('day');
     month.value = new Date().getMonth() + 1;
-    day.value = new Date().getDate();
+    date.value = new Date().getDate();
 </script>
 
 <script>
@@ -336,7 +336,7 @@ See what you've tweeted on this day in the past.
         event.preventDefault();
         window.username = usernameInput.value;
         window.username = window.username.trim();
-        window.dateValue = date.value || new Date();
+        window.dateValue = `${new Date().getFullYear()}-${Number(month.value)}-${Number(date.value)}`;
 
         history.pushState({username}, '', '#' + username);
         window.day = (new Date(dateValue)).toLocaleString('en-us', {month: 'long', day: 'numeric'});
