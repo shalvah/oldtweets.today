@@ -59,9 +59,8 @@
         }
 
         .input-group {
-            display: grid;
+            display: inline-grid;
             grid-template-columns: 1fr auto auto auto;
-            width: 50%;
             margin: 32px auto;
         }
 
@@ -343,7 +342,6 @@
         window.dateValue = `${new Date().getFullYear()}-${Number(month.value)}-${Number(date.value)}`;
 
         history.pushState({username}, '', '#' + username);
-        window.day = (new Date(dateValue)).toLocaleString('en-us', {month: 'long', day: 'numeric'});
 
         showLoadingIndicator();
         // get rid of any existing content
@@ -363,7 +361,7 @@
                 }
 
                 if (!hasContent) {
-                    throw `Sorry, we couldn't find any tweets by <b>${window.username}</b> on <b>${window.day}</b>😕`;
+                    throw `Sorry, we couldn't find any tweets by <b>${window.username}</b> on <b>${thisDay.textContent}</b>😕`;
                 }
 
                 injectContentIntoPage(tweetsHtml.join("\n"), true);
