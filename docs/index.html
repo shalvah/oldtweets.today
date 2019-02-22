@@ -198,7 +198,7 @@
 
 <body>
 <h2>#TwitterThrowback</h2>
-See what you've tweeted on this day in the past.
+<span>See what you've tweeted on <span id="this_day"></span> in the past.</span>
 <form onsubmit="handleFormSubmit(event);">
     <div class="input-group">
         <input id="username-input" type="text" name="username" placeholder="Your Twitter username" autocomplete="off"
@@ -241,10 +241,16 @@ See what you've tweeted on this day in the past.
     // Set the default date input value to today
     var month = document.getElementById('month');
     var date = document.getElementById('day');
+    var thisDay = document.getElementById('this_day');
 
     month.value = new Date().getMonth() + 1;
     checkMonth(month.value); // Populate the date options based on the present month
     date.value = new Date().getDate();
+    setThisDayValue();
+
+    function setThisDayValue() {
+        thisDay.textContent = `${month.options[month.selectedIndex].textContent} ${date.value}`;
+    }
 
     function checkMonth() { // Determine the number of days in the selected month
         let selectedMonth = Number(month.value);
@@ -268,9 +274,11 @@ See what you've tweeted on this day in the past.
         // This attempts to set the date value to the previously selected date
         // Defaults to numberOfDays if date is invalid (Like Feb 31)
         date.value = currentDate <= numberOfDays? currentDate : numberOfDays;
+        setThisDayValue();
     }
 
     month.addEventListener('change', checkMonth);
+    day.addEventListener('change', setThisDayValue);
 </script>
 
 <script>
@@ -312,7 +320,7 @@ See what you've tweeted on this day in the past.
     }
 
     function loadThatShit() {
-        loadingIndicator.innerText = `Fetching ${window.username}'s tweets from ${day}...just a sec 🚀`;
+        loadingIndicator.innerText = `Fetching ${window.username}'s tweets from ${thisDay.textContent}...just a sec 🚀`;
         loadingIndicator.style.display = 'block';
         emojiLoad();
     }
@@ -320,7 +328,7 @@ See what you've tweeted on this day in the past.
     function emojiLoad() {
         window.loaderInterval = setInterval(() => {
             let emojis = ['🤔', '📝', '👩‍🏭', '🤗', '🙈', '😸', '🙂', '😅', '💪', '😊'];
-            loadingIndicator.innerText = `Fetching ${window.username}'s tweets from ${day}...just a sec ${emojis[Math.floor(Math.random() * emojis.length)]}`;
+            loadingIndicator.innerText = `Fetching ${window.username}'s tweets from ${thisDay.textContent}...just a sec ${emojis[Math.floor(Math.random() * emojis.length)]}`;
         }, 750);
     }
 </script>
