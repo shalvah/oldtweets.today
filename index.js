@@ -87,14 +87,15 @@ exports.getTweetsOnThisDay = (req, res) => {
             // uses our app at 00:30 Feb 16, they'll get tweets made on Feb 15.
             // We need to change our date query to reflect the day wherever they are
             let offset = req.query.utcOffset;
-            let date = req.query.date || new Date();
-            let today = new Date(date);
+            let from = req.query.from || new Date().getFullYear();
+            let until = req.query.until || null;
+            let day = req.query.day || new Date().getDate();
+            let month = req.query.month || new Date().getMonth() + 1;
+            let today = new Date(`${from}-${month}-${day}`);
             if (offset) {
                 today.setTime(today.getTime() + (-1 * offset * 60 * 1000));
             }
 
-            let from = req.query.from || new Date().getFullYear();
-            let until = req.query.until || null;
             return getTweetsOnThisDay(username, { from, until }, today)
                 .then(tweets => respond(res, tweets));
         default:
