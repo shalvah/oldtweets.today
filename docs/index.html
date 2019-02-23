@@ -239,21 +239,21 @@
 <script>
     // Set the default date input value to today
     var month = document.getElementById('month');
-    var date = document.getElementById('day');
+    var day = document.getElementById('day');
     var thisDay = document.getElementById('this_day');
 
     month.value = new Date().getMonth() + 1;
     checkMonth(month.value); // Populate the date options based on the present month
-    date.value = new Date().getDate();
+    day.value = new Date().getDate();
     setThisDayValue();
 
     function setThisDayValue() {
-        thisDay.textContent = `${month.options[month.selectedIndex].textContent} ${date.value}`;
+        thisDay.textContent = `${month.options[month.selectedIndex].textContent} ${day.value}`;
     }
 
     function checkMonth() { // Determine the number of days in the selected month
         let selectedMonth = Number(month.value);
-        let selectedDate = date.value;
+        let selectedDate = day.value;
         if ([1,3,5,7,8,10,12].includes(selectedMonth)) {
             populateDays(31, selectedDate);
         } else if ([4,6,9,11].includes(selectedMonth)) {
@@ -272,7 +272,7 @@
         }
         // This attempts to set the date value to the previously selected date
         // Defaults to numberOfDays if date is invalid (Like Feb 31)
-        date.value = currentDate <= numberOfDays? currentDate : numberOfDays;
+        day.value = currentDate <= numberOfDays? currentDate : numberOfDays;
         setThisDayValue();
     }
 
@@ -339,14 +339,13 @@
         event.preventDefault();
         window.username = usernameInput.value;
         window.username = window.username.trim();
-        window.dateValue = `${new Date().getFullYear()}-${Number(month.value)}-${Number(date.value)}`;
 
         history.pushState({username}, '', '#' + username);
 
         showLoadingIndicator();
         // get rid of any existing content
         tweetsContainer.innerHTML = '';
-        getTweetsOnThisDay(username, dateValue)
+        getTweetsOnThisDay(username, day.value, month.value)
             .then(tweets => {
                 let tweetsHtml = [];
                 let hasContent = false;
@@ -373,10 +372,10 @@
     /**
      * @param {string} username
      */
-    function getTweetsOnThisDay(username, date) {
+    function getTweetsOnThisDay(username, day, month) {
         const today = new Date();
         const utcOffset = today.getTimezoneOffset();
-        const baseApiUrl = `https://europe-west1-tweetedonthisday.cloudfunctions.net/getTweetsOnThisDay?username=${username}&utcOffset=${utcOffset}&date=${date}`;
+        const baseApiUrl = `https://europe-west1-oldtweetstoday.cloudfunctions.net/getTweetsOnThisDay?username=${username}&utcOffset=${utcOffset}&day=${day}&month=${month}`;
         let baseYear = today.getFullYear();
         let years = [];
         // request in three-year batches to improve speed
