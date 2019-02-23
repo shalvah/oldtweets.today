@@ -90,6 +90,10 @@
             font-family: inherit;
         }
 
+        #submit-button:disabled {
+            cursor: wait;
+        }
+
         #loading-indicator {
             font-size: 1.8rem;
             margin: 50px;
@@ -229,6 +233,7 @@ See what you've tweeted on this day in the past.
 <script>
     function showLoadingIndicator() {
         submitButton.disabled = true;
+        submitButton.innerText = 'Loading...';
         loadThatShit();
     }
 
@@ -237,6 +242,7 @@ See what you've tweeted on this day in the past.
         succesful && (loadingIndicator.innerText = "Done! ✅");
         setTimeout(() => {
             submitButton.removeAttribute('disabled');
+            submitButton.innerText = 'Show me';
             succesful && (loadingIndicator.style.display = 'none');
             succesful && (tweetsContainer.style.display = 'block');
         }, 500);
