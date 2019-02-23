@@ -83,11 +83,15 @@
             color: white;
             height: 3.0rem;
             padding: 0.5rem 1rem;
-	    cursor: pointer;
+	        cursor: pointer;
             border-top-right-radius: 10px;
             border-bottom-right-radius: 10px;
             border: none;
             font-family: inherit;
+        }
+
+        #submit-button:disabled {
+            cursor: wait;
         }
 
         #loading-indicator {
@@ -229,6 +233,7 @@ See what you've tweeted on this day in the past.
 <script>
     function showLoadingIndicator() {
         submitButton.disabled = true;
+        submitButton.innerText = 'Loading...';
         loadThatShit();
     }
 
@@ -237,6 +242,7 @@ See what you've tweeted on this day in the past.
         succesful && (loadingIndicator.innerText = "Done! ✅");
         setTimeout(() => {
             submitButton.removeAttribute('disabled');
+            submitButton.innerText = 'Show me';
             succesful && (loadingIndicator.style.display = 'none');
             succesful && (tweetsContainer.style.display = 'block');
         }, 500);
