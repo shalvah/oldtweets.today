@@ -5,7 +5,8 @@ function getTweetsOnThisDay(username, { from, until }, today = new Date()) {
 
     // Generate an array of all the years we're looking for tweets in.
     // Twitter was founded in 2006, so we only need to go as far as that.
-    until = until || 2006;
+    from = parseInt(from) || today.getFullYear();
+    until = parseInt(until) || 2006;
     const years = Array.from(
         {length: parseInt(from) + 1 - parseInt(until)},
         (_, i) => from - i
@@ -83,17 +84,22 @@ exports.getTweetsOnThisDay = (req, res) => {
                 username = username.substr(1);
             }
 
-            // Out function runs in UTC time. So if a user in UTC+1 (offset: -60)
-            // uses our app at 00:30 Feb 16, they'll get tweets made on Feb 15.
-            // We need to change our date query to reflect the day wherever they are
-            let offset = req.query.utcOffset;
+            // First, we need to get our reference date (day, month, and year range to search for)
             let today = new Date();
+            let from = parseInt(req.query.from) || today.getFullYear();
+            let until = parseInt(req.query.until) || 2006;
+            let day = parseInt(req.query.day) || today.getDate();
+            let month = parseInt(req.query.month) || today.getMonth() + 1;
+            today = new Date(`${from}-${month}-${day}`);
+            
+            // Our function runs in UTC time. So if a user in UTC+1 (offset: -60)
+            // uses our app at 00:30 Feb 16, they'll get tweets made on Feb 15.
+            // We need to change our date query to reflect the day wherever they are.
+            let offset = parseInt(req.query.utcOffset);
             if (offset) {
                 today.setTime(today.getTime() + (-1 * offset * 60 * 1000));
             }
 
-            let from = req.query.from || today.getFullYear();
-            let until = req.query.until || null;
             return getTweetsOnThisDay(username, { from, until }, today)
                 .then(tweets => respond(res, tweets));
         default:
