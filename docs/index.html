@@ -97,6 +97,10 @@
             min-width: 120px;
         }
 
+        #submit-button:disabled {
+            cursor: wait;
+        }
+
         #loading-indicator {
             font-size: 1.8rem;
             margin: 50px;
@@ -305,6 +309,7 @@
 <script>
     function showLoadingIndicator() {
         submitButton.disabled = true;
+        submitButton.innerText = 'Loading...';
         loadThatShit();
     }
 
@@ -313,6 +318,7 @@
         succesful && (loadingIndicator.innerText = "Done! ✅");
         setTimeout(() => {
             submitButton.removeAttribute('disabled');
+            submitButton.innerText = 'Show me';
             succesful && (loadingIndicator.style.display = 'none');
             succesful && (tweetsContainer.style.display = 'block');
         }, 500);
