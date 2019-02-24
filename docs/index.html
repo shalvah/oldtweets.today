@@ -239,9 +239,9 @@
 
 <script>
     // Set the default date input value to today
-    var month = document.getElementById('month');
-    var day = document.getElementById('day');
-    var thisDay = document.getElementById('this_day');
+    window.month = document.getElementById('month');
+    window.day = document.getElementById('day');
+    window.thisDay = document.getElementById('this_day');
 
     month.value = new Date().getMonth() + 1;
     checkMonth(month.value); // Populate the date options based on the present month
