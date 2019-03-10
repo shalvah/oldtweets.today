@@ -57,25 +57,28 @@
         }
 
         .input-group {
-            display: flex;
-            width: 50%;
+            display: inline-grid;
+            grid-template-columns: 1fr auto auto auto;
             margin: 32px auto;
         }
 
-        #username-input {
-            flex: 1;
-            height: 3.0rem;
+        select, input {
+            padding: 0.5rem;
             background: none;
-            padding: 0.5rem 0.5rem;
-            font-size: 20px;
             outline: none;
+            border: 2px solid #0d47a1;
+            font-size: 20px;
+            font-family: inherit;
+        }
+
+        #username-input {
+            font-size: 20px;
             /* A Twitter-y colour border: 2px solid #3B94D9; */
             border: 2px solid #0d47a1;
             -webkit-transition: all 0.28s ease;
             transition: all 0.28s ease;
             border-top-left-radius: 10px;
             border-bottom-left-radius: 10px;
-            font-family: inherit;
         }
 
         #submit-button {
@@ -84,11 +87,12 @@
             color: white;
             height: 3.0rem;
             padding: 0.5rem 1rem;
-	    cursor: pointer;
+            cursor: pointer;
             border-top-right-radius: 10px;
             border-bottom-right-radius: 10px;
             border: none;
             font-family: inherit;
+            min-width: 120px;
         }
 
         #submit-button:disabled {
@@ -164,7 +168,7 @@
             }
 
             .input-group {
-                flex-direction: column;
+                grid-template-columns: 1fr;
                 width: 95%;
             }
 
@@ -176,7 +180,17 @@
 
         @media screen and (min-width: 601px) and (max-width: 800px) {
             .input-group {
-                width: 70%;
+                width: 100%;
+            }
+        }
+
+        @media screen and (min-width: 601px) {
+            select[name="month"] {
+                border-left: none;
+                border-right: none;
+            }
+            select[name="day"] {
+                border-right: none;
             }
         }
     </style>
@@ -185,11 +199,26 @@
 
 <body>
 <h2>#TwitterThrowback</h2>
-See what you've tweeted on this day in the past.
+<span>See what you've tweeted on <span id="this_day">this day</span> in the past.</span>
 <form onsubmit="handleFormSubmit(event);">
     <div class="input-group">
         <input id="username-input" type="text" name="username" placeholder="Your Twitter username" autocomplete="off"
                required>
+        <select name="month" id="month">
+            <option value="1">January</option>
+            <option value="2">February</option>
+            <option value="3">March</option>
+            <option value="4">April</option>
+            <option value="5">May</option>
+            <option value="6">June</option>
+            <option value="7">July</option>
+            <option value="8">August</option>
+            <option value="9">September</option>
+            <option value="10">October</option>
+            <option value="11">November</option>
+            <option value="12">December</option>
+        </select>
+        <select name="day" id="day"></select>
         <button id="submit-button" type="submit">Show me</button>
     </div>
     <div id="help-text">
@@ -208,6 +237,50 @@ See what you've tweeted on this day in the past.
 <button onclick="shareToTwitter()" id="shareButton" title="Share on Twitter">
 <img id="shareImage" src="./img/twitter_icon.png"></button>
 <button onclick="backToTop()" id="topBtn" title="Back to top">👆</button>
+
+<script>
+    // Set the default date input value to today
+    window.month = document.getElementById('month');
+    window.day = document.getElementById('day');
+    window.thisDay = document.getElementById('this_day');
+
+    month.value = new Date().getMonth() + 1;
+    checkMonth(month.value); // Populate the date options based on the present month
+    day.value = new Date().getDate();
+    setThisDayValue();
+
+    function setThisDayValue() {
+        thisDay.textContent = `${month.options[month.selectedIndex].textContent} ${day.value}`;
+    }
+
+    function checkMonth() { // Determine the number of days in the selected month
+        let selectedMonth = Number(month.value);
+        let selectedDate = day.value;
+        if ([1,3,5,7,8,10,12].includes(selectedMonth)) {
+            populateDays(31, selectedDate);
+        } else if ([4,6,9,11].includes(selectedMonth)) {
+            populateDays(30, selectedDate);
+        } else {
+            populateDays(29, selectedDate);
+        }
+    }
+
+
+    function populateDays(numberOfDays, currentDate) {
+        day.innerHTML = null; // Remove the existing days options
+        // Insert options for each day up to "numberOfDays" in the month
+        for (let i = 1; i <= numberOfDays; i++) {
+            day.innerHTML += `<option value="${i}">${i}</option>`;
+        }
+        // This attempts to set the date value to the previously selected date
+        // Defaults to numberOfDays if date is invalid (Like Feb 31)
+        day.value = currentDate <= numberOfDays? currentDate : numberOfDays;
+        setThisDayValue();
+    }
+
+    month.addEventListener('change', checkMonth);
+    day.addEventListener('change', setThisDayValue);
+</script>
 
 <script>
     var tweetsContainer = document.getElementById('tweets-container');
@@ -250,7 +323,7 @@ See what you've tweeted on this day in the past.
     }
 
     function loadThatShit() {
-        loadingIndicator.innerText = `Fetching ${window.username}'s tweets from ${day}...just a sec 🚀`;
+        loadingIndicator.innerText = `Fetching ${window.username}'s tweets from ${thisDay.textContent}...just a sec 🚀`;
         loadingIndicator.style.display = 'block';
         emojiLoad();
     }
@@ -258,7 +331,7 @@ See what you've tweeted on this day in the past.
     function emojiLoad() {
         window.loaderInterval = setInterval(() => {
             let emojis = ['🤔', '📝', '👩‍🏭', '🤗', '🙈', '😸', '🙂', '😅', '💪', '😊'];
-            loadingIndicator.innerText = `Fetching ${window.username}'s tweets from ${day}...just a sec ${emojis[Math.floor(Math.random() * emojis.length)]}`;
+            loadingIndicator.innerText = `Fetching ${window.username}'s tweets from ${thisDay.textContent}...just a sec ${emojis[Math.floor(Math.random() * emojis.length)]}`;
         }, 750);
     }
 </script>
@@ -272,12 +345,11 @@ See what you've tweeted on this day in the past.
         window.username = window.username.trim();
 
         history.pushState({username}, '', '#' + username);
-        window.day = (new Date).toLocaleString('en-us', {month: 'long', day: 'numeric'});
 
         showLoadingIndicator();
         // get rid of any existing content
         tweetsContainer.innerHTML = '';
-        getTweetsOnThisDay(username)
+        getTweetsOnThisDay(username, day.value, month.value)
             .then(tweets => {
                 let tweetsHtml = [];
                 let hasContent = false;
@@ -292,7 +364,7 @@ See what you've tweeted on this day in the past.
                 }
 
                 if (!hasContent) {
-                    throw `Sorry, we couldn't find any tweets by <b>${window.username}</b> on <b>${window.day}</b>😕`;
+                    throw `Sorry, we couldn't find any tweets by <b>${window.username}</b> on <b>${thisDay.textContent}</b>😕`;
                 }
 
                 injectContentIntoPage(tweetsHtml.join("\n"), true);
@@ -304,11 +376,11 @@ See what you've tweeted on this day in the past.
     /**
      * @param {string} username
      */
-    function getTweetsOnThisDay(username) {
+    function getTweetsOnThisDay(username, day, month) {
         const today = new Date();
         const utcOffset = today.getTimezoneOffset();
-        const baseApiUrl = `https://europe-west1-tweetedonthisday.cloudfunctions.net/getTweetsOnThisDay?username=${username}&utcOffset=${utcOffset}`;
-        let baseYear = today.getFullYear() - 1;
+        const baseApiUrl = `https://europe-west1-tweetedonthisday.cloudfunctions.net/getTweetsOnThisDay?username=${username}&utcOffset=${utcOffset}&day=${day}&month=${month}`;
+        let baseYear = today.getFullYear();
         let years = [];
         // request in three-year batches to improve speed
         while (baseYear > 2005) {
