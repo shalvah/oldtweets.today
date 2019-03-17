@@ -289,17 +289,42 @@
     var loadingIndicator = document.getElementById('loading-indicator');
 </script>
 <script>
+    /**
+     * @function getMonthAndDay
+     * @description returns the Date API Friendly month and day 
+     * @param monthAndDayString a string containing the month and day separated by a space
+    */
+     function getMonthAndDay(monthAndDayString) {
+        const dummyDate = new Date(monthAndDayString);
+        return [ dummyDate.getMonth() + 1, dummyDate.getDate() ];
+    }
+</script>
+<script>
     // Prefill the value if the user is coming from a direct link (oldtweets.today/#username)
     // Normally, I'd want to do this using a path, but GitHub Pages doesn't support routing via paths
     let hash = window.location.hash.split('#')[1];
     if (hash != '' && hash != undefined) {
-        usernameInput.value = hash;
+        const startingPointOfDate = hash.indexOf('?');
+        if (startingPointOfDate > -1) {
+            usernameInput.value = hash.substring(0, startingPointOfDate);
+            const monthAndDay = hash.substring(startingPointOfDate + 1).replace('date=', '').replace('+', ' ');
+            month.value = getMonthAndDay(monthAndDay)[0];
+            day.value = getMonthAndDay(monthAndDay)[1];
+        } else {
+            usernameInput.value = hash;
+        }
     } else {
         // Also support query string (oldtweets.today?username=<username>)
         let queryString = window.location.search;
         let queryParams = new URLSearchParams(queryString);
         if (queryParams.get('username')) {
             usernameInput.value = queryParams.get('username');
+        }
+
+        if (queryParams.get('date')) {
+            const monthAndDay = getMonthAndDay(queryParams.get('date'));
+            month.value = getMonthAndDay(monthAndDay)[0];
+            day.value = getMonthAndDay(monthAndDay)[1];
         }
     }
 </script>
@@ -343,8 +368,7 @@
         event.preventDefault();
         window.username = usernameInput.value;
         window.username = window.username.trim();
-
-        history.pushState({username}, '', '#' + username);
+        history.pushState({username}, '', `#${username}?date=${month.options[month.selectedIndex].textContent}+${day.value}`;
 
         showLoadingIndicator();
         // get rid of any existing content
