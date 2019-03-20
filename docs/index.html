@@ -368,7 +368,7 @@
         event.preventDefault();
         window.username = usernameInput.value;
         window.username = window.username.trim();
-        history.pushState({username}, '', `#${username}?date=${month.options[month.selectedIndex].textContent}+${day.value}`;
+        history.pushState({username}, '', `#${username}?date=${month.options[month.selectedIndex].textContent}+${day.value}`);
 
         showLoadingIndicator();
         // get rid of any existing content
@@ -462,8 +462,9 @@
     function shareToTwitter() {
         let url;
         if (window.username !== undefined) {
+            const encodedUri = encodeURIComponent(`?username=${window.username}?date=${month.options[month.selectedIndex].textContent}+${day.value}`);
             url = `http://twitter.com/share?text=Here's my TwitterThrowback. Check yours here` +
-                `&url=http://oldtweets.today/?username=${window.username}&hashtags=OldTweetsToday,TwitterThrowback`;
+                `&url=http://oldtweets.today/${encodedUri}&hashtags=OldTweetsToday,TwitterThrowback`;
         }
         else {
             url = `http://twitter.com/share?text=Wanna see what you were tweeting on this day in the past? Check out ` +
