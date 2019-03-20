@@ -376,8 +376,7 @@
         event.preventDefault();
         window.username = usernameInput.value;
         window.username = window.username.trim();
-        history.pushState({username}, '', `#${username}?date=${month.options[month.selectedIndex].textContent}+${day.value}`);
-
+        history.pushState({username}, '', `/#${username}?date=${month.options[month.selectedIndex].textContent}+${day.value}`);
         showLoadingIndicator();
         // get rid of any existing content
         tweetsContainer.innerHTML = '';
