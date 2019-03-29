@@ -278,8 +278,8 @@
         setThisDayValue();
     }
 
-    month.addEventListener('change', checkMonth);
-    day.addEventListener('change', setThisDayValue);
+    window.month.addEventListener('change', checkMonth);
+    window.day.addEventListener('change', setThisDayValue);
 </script>
 
 <script>
@@ -314,8 +314,8 @@
         if (startingPointOfDate > -1) {
             usernameInput.value = hash.substring(0, startingPointOfDate);
             const monthAndDay = hash.substring(startingPointOfDate + 1).replace('date=', '').trim().replace('+', ' ');
-            month.value = getMonthAndDay(monthAndDay)[0].toString();
-            day.value = getMonthAndDay(monthAndDay)[1];
+            window.month.value = getMonthAndDay(monthAndDay)[0].toString();
+            window.day.value = getMonthAndDay(monthAndDay)[1];
         } else {
             usernameInput.value = hash;
         }
@@ -330,8 +330,8 @@
             if (initializations[1]) {
                 const dateString = queryParams.get('username').split('?')[1].replace('date=', '').trim().replace('+', ' ');
                 const monthAndDay = getMonthAndDay(dateString);
-                month.value = monthAndDay[0].toString();
-                day.value = monthAndDay[1];
+                window.month.value = monthAndDay[0].toString();
+                window.day.value = monthAndDay[1];
             }
         }
     }
@@ -377,6 +377,7 @@
         event.preventDefault();
         window.username = usernameInput.value;
         window.username = window.username.trim();
+        const { month, day } = window;
         history.pushState({username}, '', `/#${username}?date=${month.options[month.selectedIndex].textContent}+${day.value}`);
         showLoadingIndicator();
         // get rid of any existing content
@@ -470,6 +471,7 @@
     function shareToTwitter() {
         let url;
         if (window.username !== undefined) {
+            const { month, day } = window;
             const encodedUri = encodeURIComponent(`?username=${window.username}?date=${month.options[month.selectedIndex].textContent}+${day.value}`);
             url = `http://twitter.com/share?text=Here's my TwitterThrowback. Check yours here` +
                 `&url=http://oldtweets.today/${encodedUri}&hashtags=OldTweetsToday,TwitterThrowback`;
