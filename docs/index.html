@@ -58,7 +58,7 @@
 
         .input-group {
             display: inline-grid;
-            grid-template-columns: 1fr auto auto auto;
+            grid-template-columns: 1fr auto auto auto auto;
             margin: 32px auto;
         }
 
@@ -219,6 +219,9 @@
             <option value="12">December</option>
         </select>
         <select name="day" id="day"></select>
+        <select name="year" id="year">
+            <option value="">Select Year</option>
+        </select>
         <button id="submit-button" type="submit">Show me</button>
     </div>
     <div id="help-text">
@@ -243,6 +246,7 @@
     window.month = document.getElementById('month');
     window.day = document.getElementById('day');
     window.thisDay = document.getElementById('this_day');
+    
 
     month.value = new Date().getMonth() + 1;
     checkMonth(month.value); // Populate the date options based on the present month
@@ -264,6 +268,22 @@
             populateDays(29, selectedDate);
         }
     }
+
+    //Adding the years select option
+   
+    for(yr = 2006; yr <= 2500; y++) {
+        const optn = document.createElement("OPTION");
+        optn.text = yr;
+        optn.value = yr;
+        
+        // if year is 2015 selected
+        let year = new Date().getFullYear();
+        if (yr == year) {
+            optn.selected = true;
+        }
+        
+        document.getElementById('year').options.add(optn);
+}
 
 
     function populateDays(numberOfDays, currentDate) {
