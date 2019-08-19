@@ -285,12 +285,8 @@
         }
     }
 
-    //Adding the years select option
+    
    
-
-
-
-
     function populateDays(numberOfDays, currentDate) {
         day.innerHTML = null; // Remove the existing days options
         // Insert options for each day up to "numberOfDays" in the month
@@ -466,7 +462,6 @@
                     }
                     return all;
                 }, {});
-                console.log(results);
                 return results;
             })
             .catch(r => {
