@@ -409,7 +409,7 @@
                     if (tweets[year].length) {
                         hasContent = true;
                         tweetsHtml.push(`<div>`);
-                        tweetsHtml.push(`<div class="year_button" onclick="minimizer(event)">${year}</div>`);
+                        tweetsHtml.push(`<div class="year_button" onclick="showOrHideTweetsInYear(event)">${year}</div>`);
                         tweetsHtml.push(`<div class="hide" id="${year}">`);
                         tweetsHtml.push(tweets[year].join("\n"));
                         tweetsHtml.push("</div><br>");
