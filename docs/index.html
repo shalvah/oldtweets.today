@@ -95,6 +95,25 @@
             min-width: 120px;
         }
 
+        .year_button {
+            background-color:#0d47a1;
+            display:block !important;
+            width: 50%;
+            margin: 0 auto;
+            height: 3.0rem;
+            text-align: center;
+            padding: 0.5rem 1rem;
+            color: white;
+            cursor: pointer;
+            border-radius: 10px;
+        }
+
+        /* accordian effect */
+        .hide {
+            display:none;
+            transition:0.5s;
+        }
+
         #submit-button:disabled {
             cursor: wait;
         }
@@ -243,6 +262,7 @@
     window.month = document.getElementById('month');
     window.day = document.getElementById('day');
     window.thisDay = document.getElementById('this_day');
+    
 
     month.value = new Date().getMonth() + 1;
     checkMonth(month.value); // Populate the date options based on the present month
@@ -265,7 +285,8 @@
         }
     }
 
-
+    
+   
     function populateDays(numberOfDays, currentDate) {
         day.innerHTML = null; // Remove the existing days options
         // Insert options for each day up to "numberOfDays" in the month
@@ -388,9 +409,12 @@
                     if (tweets[year].length) {
                         hasContent = true;
                         tweetsHtml.push(`<div>`);
-                        tweetsHtml.push(`<h3>${year}</h3>`);
+                        tweetsHtml.push(`<div class="year_button" onclick="minimizer(event)">${year}</div>`);
+                        tweetsHtml.push(`<div class="hide" id="${year}">`);
                         tweetsHtml.push(tweets[year].join("\n"));
                         tweetsHtml.push("</div><br>");
+                        tweetsHtml.push("</div>");
+
                     }
                 }
 
@@ -413,6 +437,7 @@
         const baseApiUrl = `https://europe-west1-tweetedonthisday.cloudfunctions.net/getTweetsOnThisDay?username=${username}&utcOffset=${utcOffset}&day=${day}&month=${month}`;
         let baseYear = today.getFullYear();
         let years = [];
+        
         // request in three-year batches to improve speed
         while (baseYear > 2005) {
             let endYear = baseYear - 2;
@@ -464,6 +489,13 @@
             loadingIndicator.innerHTML = message;
             loadingIndicator.style.display = 'block';
         }, 1000);
+    }
+
+    //Collapsible Effect
+    function showOrHideTweetsInYear(event){
+        let parentid = event.target.nextElementSibling.getAttribute('id');
+        parentelem = document.getElementById(`${parentid}`);
+        parentelem.classList.toggle('hide');
     }
 
     function shareToTwitter() {
