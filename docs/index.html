@@ -221,7 +221,9 @@
 <span>See what you've tweeted on <span id="this_day">this day</span> in the past.</span>
 <form onsubmit="handleFormSubmit(event);">
     <div class="input-group">
-        <input id="username-input" type="text" name="username" placeholder="Your Twitter username" autocomplete="off"
+        <input id="username-input" type="text" name="username" placeholder="Your Twitter username"
+               autocomplete="off"
+               autocapitalize="none"
                required>
         <select name="month" id="month">
             <option value="1">January</option>
