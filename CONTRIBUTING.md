@@ -25,17 +25,16 @@ Here's an example of a good PR: https://github.com/shalvah/oldtweets.today/pull/
 ### Deploying a new service
 If you're starting from scratch (ie not updating an existing service), run `serverless deploy` to deploy.
 
-### Updating an existing service
-To update an already deployed serverless function, run `serverless deploy`.
-
-The deployed URL remains the same.
-
-## Important notes
-1. After deploying a new function (or deleting and recreating), you need to set your cloud function to be accessible on the public internet. Currently, the Serverless Framework doesn't currently support setting this, so you'll have to do this manually *_each time_*, either [via the Cloud Console](https://cloud.google.com/functions/docs/securing/managing-access-iam#allowing_unauthenticated_function_invocation), or by using `gcloud` (make sure the correct project ID is used):
+After deploying a new cloud function, you need to set it to be accessible on the public internet. Currently, the Serverless Framework doesn't support setting this, so you'll have to do this manually whenever you deploy a new function, either [via the Cloud Console](https://cloud.google.com/functions/docs/securing/managing-access-iam#allowing_unauthenticated_function_invocation), or by using `gcloud` (make sure to use the correct project ID):
 
 ```
 gcloud functions add-iam-policy-binding tweeted-on-this-day-dev-getTweetsOnThisDay --region=europe-west1 --member=allUsers --role=roles/cloudfunctions.invoker --project=tweetedonthisday
 ```
+
+### Updating an existing service
+To update an already deployed serverless function, run `serverless deploy`.
+
+The deployed URL remains the same.
 
 ## Local testing
 I haven't really optimized this for local testing yet.
