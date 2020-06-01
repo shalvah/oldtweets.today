@@ -36,5 +36,12 @@ To update an already deployed serverless function, run `serverless deploy`.
 
 The deployed URL remains the same.
 
-## Local testing
-I haven't really optimized this for local testing yet.
+## Running it locally
+
+You can test the main function manually using [coppa](https://github.com/rametta/coppa), which is included as a dev dependency:
+
+```bash
+coppa start
+```
+
+Then visit http://localhost:8080/tweeted-on-this-day-getTweetsOnThisDay?username=your-username
