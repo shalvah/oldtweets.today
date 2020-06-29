@@ -59,7 +59,8 @@ function getTweetEmbedHtml(tweetUrl) {
         url: tweetUrl,
         theme: 'dark',
         align: 'center',
-        dnt: true
+        dnt: true,
+        omit_script: true
     });
     return got(url, {headers: {'user-agent': null}})
         .then(r => qs.unescape(JSON.parse(r.body).html));

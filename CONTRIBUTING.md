@@ -41,7 +41,7 @@ The deployed URL remains the same.
 You can test the main function manually using [coppa](https://github.com/rametta/coppa), which is included as a dev dependency:
 
 ```bash
-$ npm run coppa
+npm run coppa
 ```
 
 Then visit http://localhost:8080/tweeted-on-this-day-getTweetsOnThisDay?username=your-username
