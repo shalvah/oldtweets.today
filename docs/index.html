@@ -275,45 +275,48 @@
 
 <script>
     // Set the default date input value to today
-    window.month = document.getElementById('month');
-    window.day = document.getElementById('day');
-    window.thisDay = document.getElementById('this_day');
+    window.monthEl = document.getElementById('month');
+    window.dayEl = document.getElementById('day');
+    window.thisDayTextEl = document.getElementById('this_day');
 
-    month.value = new Date().getMonth() + 1;
-    checkMonth(month.value); // Populate the date options based on the present month
-    day.value = new Date().getDate();
+    // Default day and month to today
+    monthEl.value = new Date().getMonth() + 1;
+    populateDaysDropdownBasedOnCurrentMonth();
+    dayEl.value = new Date().getDate();
     setThisDayValue();
 
     function setThisDayValue() {
-        thisDay.textContent = `${month.options[month.selectedIndex].textContent} ${day.value}`;
+        thisDayTextEl.textContent = `${monthEl.options[monthEl.selectedIndex].textContent} ${dayEl.value}`;
     }
 
-    function checkMonth() { // Determine the number of days in the selected month
-        let selectedMonth = Number(month.value);
-        let selectedDate = day.value;
+    function populateDaysDropdownBasedOnCurrentMonth() {
+        let selectedMonth = Number(monthEl.value);
+        let selectedDay = dayEl.value;
+        let numberOfDays;
         if ([1, 3, 5, 7, 8, 10, 12].includes(selectedMonth)) {
-            populateDays(31, selectedDate);
+            numberOfDays = 31;
         } else if ([4, 6, 9, 11].includes(selectedMonth)) {
-            populateDays(30, selectedDate);
+            numberOfDays = 30;
         } else {
-            populateDays(29, selectedDate);
+            numberOfDays = 29;
         }
-    }
-
-    function populateDays(numberOfDays, currentDate) {
-        day.innerHTML = null; // Remove the existing days options
-        // Insert options for each day up to "numberOfDays" in the month
-        for (let i = 1; i <= numberOfDays; i++) {
-            day.innerHTML += `<option value="${i}">${i}</option>`;
-        }
-        // This attempts to set the date value to the previously selected date
-        // Defaults to numberOfDays if date is invalid (like Feb 31)
-        day.value = currentDate <= numberOfDays ? currentDate : numberOfDays;
+        populateDaysDropdown(numberOfDays);
+        // Update the selected day in the dropdown
+        // Defaults to the largest day if it results in an invalid date (like Feb 31)
+        dayEl.value = selectedDay <= numberOfDays ? selectedDay : numberOfDays;
         setThisDayValue();
     }
 
-    window.month.addEventListener('change', checkMonth);
-    window.day.addEventListener('change', setThisDayValue);
+    function populateDaysDropdown(numberOfDaysInMonth) {
+        dayEl.innerHTML = null;
+        // Insert options for each day up to "numberOfDays" in the month
+        for (let i = 1; i <= numberOfDaysInMonth; i++) {
+            dayEl.innerHTML += `<option value="${i}">${i}</option>`;
+        }
+    }
+
+    window.monthEl.addEventListener('change', populateDaysDropdownBasedOnCurrentMonth);
+    window.dayEl.addEventListener('change', setThisDayValue);
 </script>
 
 <script>
@@ -324,8 +327,7 @@
 </script>
 <script>
     /**
-     * @function getMonthAndDay
-     * @description returns the Date API Friendly month and day
+     * Returns the current month and day as Numbers that can be parsed by the Date API
      * @param monthAndDayString a string containing the month and day separated by a space
      */
     function getMonthAndDay(monthAndDayString) {
@@ -349,8 +351,8 @@
         usernameInput.value = initializations[0];
         if (initializations[1]) {
             const monthAndDay = getMonthAndDay(initializations[1]);
-            window.month.value = monthAndDay[0].toString();
-            window.day.value = monthAndDay[1];
+            window.monthEl.value = monthAndDay[0].toString();
+            window.dayEl.value = monthAndDay[1];
         }
     }
     setThisDayValue();
@@ -375,7 +377,7 @@
     }
 
     function loadThatShit() {
-        loadingIndicator.innerText = `Fetching ${window.username}'s tweets from ${thisDay.textContent}...just a sec 🚀`;
+        loadingIndicator.innerText = `Fetching ${window.username}'s tweets from ${thisDayTextEl.textContent}...just a sec 🚀`;
         loadingIndicator.style.display = 'block';
         emojiLoad();
     }
@@ -383,7 +385,7 @@
     function emojiLoad() {
         window.loaderInterval = setInterval(() => {
             let emojis = ['🤔', '📝', '👩‍🏭', '🤗', '🙈', '😸', '🙂', '😅', '💪', '😊'];
-            loadingIndicator.innerText = `Fetching ${window.username}'s tweets from ${thisDay.textContent}...just a sec ${emojis[Math.floor(Math.random() * emojis.length)]}`;
+            loadingIndicator.innerText = `Fetching ${window.username}'s tweets from ${thisDayTextEl.textContent}...just a sec ${emojis[Math.floor(Math.random() * emojis.length)]}`;
         }, 750);
     }
 </script>
@@ -396,11 +398,11 @@
         window.username = usernameInput.value;
         window.username = window.username.trim();
         const {month, day} = window;
-        history.pushState({username}, '', `/?username=${username}&date=${month.options[month.selectedIndex].textContent}+${day.value}`);
+        history.pushState({username}, '', `/?username=${username}&date=${monthEl.options[monthEl.selectedIndex].textContent}+${dayEl.value}`);
         showLoadingIndicator();
-        // get rid of any existing content
+        // Get rid of any existing content
         tweetsContainer.innerHTML = '';
-        getTweetsOnThisDay(username, day.value, month.value)
+        getTweetsOnThisDay(username, dayEl.value, monthEl.value)
             .then(tweets => {
                 let tweetsHtml = [];
                 let hasContent = false;
@@ -418,7 +420,7 @@
                 }
 
                 if (!hasContent) {
-                    throw `Sorry, we couldn't find any tweets by <b>${window.username}</b> on <b>${thisDay.textContent}</b>😕`;
+                    throw `Sorry, we couldn't find any tweets by <b>${window.username}</b> on <b>${thisDayTextEl.textContent}</b>😕`;
                 }
 
                 injectContentIntoPage(tweetsHtml.join("\n"), true);
@@ -518,7 +520,7 @@
         let url;
         if (window.username !== undefined) {
             const {month, day} = window;
-            const encodedUri = encodeURIComponent(`?username=${window.username}&date=${month.options[month.selectedIndex].textContent}+${day.value}`);
+            const encodedUri = encodeURIComponent(`?username=${window.username}&date=${monthEl.options[monthEl.selectedIndex].textContent}+${dayEl.value}`);
             url = `http://twitter.com/share?text=Here's my TwitterThrowback. Check yours here` +
                 `&url=http://oldtweets.today/${encodedUri}&hashtags=OldTweetsToday,TwitterThrowback`;
         } else {
