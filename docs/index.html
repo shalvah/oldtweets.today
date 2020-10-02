@@ -307,7 +307,7 @@
             day.innerHTML += `<option value="${i}">${i}</option>`;
         }
         // This attempts to set the date value to the previously selected date
-        // Defaults to numberOfDays if date is invalid (Like Feb 31)
+        // Defaults to numberOfDays if date is invalid (like Feb 31)
         day.value = currentDate <= numberOfDays ? currentDate : numberOfDays;
         setThisDayValue();
     }
@@ -338,33 +338,19 @@
     }
 </script>
 <script>
-    // Prefill the value if the user is coming from a direct link (oldtweets.today/#username)
+    // Prefill the value if the user is coming from a direct link (oldtweets.today/?username=<username>)
     // Normally, I'd want to do this using a path, but GitHub Pages doesn't support routing via paths
 
-
-    let hash = window.location.hash.split('#')[1];
-    if (hash != '' && hash != undefined) {
-        const startingPointOfDate = hash.indexOf('?');
-        if (startingPointOfDate > -1) {
-            usernameInput.value = hash.substring(0, startingPointOfDate);
-            const initDate = new URLSearchParams(hash.substr(hash.indexOf('?') + 1)).get('date');
-            [window.month.value, window.day.value] = getMonthAndDay(initDate);
-        } else {
-            usernameInput.value = hash;
-        }
-    } else {
-        // Also support query string (oldtweets.today?username=<username>)
-        let queryString = window.location.search;
-        let queryParams = new URLSearchParams(queryString);
-        // also ?username=<username>&date=<date>
-        if (queryParams.get('username')) {
-            const initializations = [queryParams.get('username'), queryParams.get('date')];
-            usernameInput.value = initializations[0];
-            if (initializations[1]) {
-                const monthAndDay = getMonthAndDay(initializations[1]);
-                window.month.value = monthAndDay[0].toString();
-                window.day.value = monthAndDay[1];
-            }
+    // Support query string (oldtweets.today?username=<username>&date=<date>)
+    let queryString = window.location.search;
+    let queryParams = new URLSearchParams(queryString);
+    if (queryParams.get('username')) {
+        const initializations = [queryParams.get('username'), queryParams.get('date')];
+        usernameInput.value = initializations[0];
+        if (initializations[1]) {
+            const monthAndDay = getMonthAndDay(initializations[1]);
+            window.month.value = monthAndDay[0].toString();
+            window.day.value = monthAndDay[1];
         }
     }
     setThisDayValue();
@@ -410,7 +396,7 @@
         window.username = usernameInput.value;
         window.username = window.username.trim();
         const {month, day} = window;
-        history.pushState({username}, '', `/#${username}?date=${month.options[month.selectedIndex].textContent}+${day.value}`);
+        history.pushState({username}, '', `/?username=${username}&date=${month.options[month.selectedIndex].textContent}+${day.value}`);
         showLoadingIndicator();
         // get rid of any existing content
         tweetsContainer.innerHTML = '';
@@ -493,7 +479,9 @@
         let container = document.getElementById('tweets-container');
         container.innerHTML = content;
         twttr.widgets.load(container);
-        setTimeout(doneWithLoading, 9000);
+        requestAnimationFrame(() => console.log("RF 1"));
+        requestAnimationFrame(() => requestAnimationFrame(() => console.log("RF 1")));
+        requestAnimationFrame(() => requestAnimationFrame(() => requestAnimationFrame(doneWithLoading)));
 /*
         const done = debounce(doneWithLoading, 10000);
         function mutationHandler(mutationList, observer) {
