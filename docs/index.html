@@ -340,20 +340,17 @@
     }
 </script>
 <script>
-    // Prefill the value if the user is coming from a direct link (oldtweets.today/?username=<username>)
-    // Normally, I'd want to do this using a path, but GitHub Pages doesn't support routing via paths
-
-    // Support query string (oldtweets.today?username=<username>&date=<date>)
+    // Prefill data if the user is coming from a direct link (oldtweets.today/?username=<username>&date=<date>)
+    // Normally, I'd want to do the username part using a path, but GitHub Pages doesn't support routing via paths
     let queryString = window.location.search;
     let queryParams = new URLSearchParams(queryString);
-    if (queryParams.get('username')) {
-        const initializations = [queryParams.get('username'), queryParams.get('date')];
-        usernameInput.value = initializations[0];
-        if (initializations[1]) {
-            const monthAndDay = getMonthAndDay(initializations[1]);
-            window.monthEl.value = monthAndDay[0].toString();
-            window.dayEl.value = monthAndDay[1];
-        }
+    if (queryParams.has('username')) {
+        usernameInput.value = queryParams.get('username');
+    }
+    if (queryParams.has('date')) {
+        const [month, day] = getMonthAndDay(queryParams.get('date'));
+        window.monthEl.value = month.toString();
+        window.dayEl.value = day;
     }
     setThisDayValue();
 </script>
@@ -397,10 +394,9 @@
         event.preventDefault();
         window.username = usernameInput.value;
         window.username = window.username.trim();
-        const {month, day} = window;
         history.pushState({username}, '', `/?username=${username}&date=${monthEl.options[monthEl.selectedIndex].textContent}+${dayEl.value}`);
         showLoadingIndicator();
-        // Get rid of any existing content
+
         tweetsContainer.innerHTML = '';
         getTweetsOnThisDay(username, dayEl.value, monthEl.value)
             .then(tweets => {
@@ -454,7 +450,7 @@
         return Promise.all(apiUrls.map(url => fetch(url)))
             .then(responses => Promise.all(responses.map(r => r.json())))
             .then(responses => {
-                // this would be simpler, but I have a suspicion it's slower
+                // This would be simpler, but I have a suspicion it's slower
                 // return Object.assign({}, ...responses);
 
                 let results = responses.reduce((all, r) => {
@@ -498,7 +494,17 @@
         observer.observe(container, {
             childList: true,
             subtree: true,
-        });*/
+        });
+    function debounce(f, t) {
+        return function (args) {
+            let previousCall = this.lastCall;
+            this.lastCall = Date.now();
+            if (previousCall && ((this.lastCall - previousCall) <= t)) {
+                clearTimeout(this.lastCallTimer);
+            }
+            this.lastCallTimer = setTimeout(() => (console.log("calling"), f(args)), t);
+        }
+    }*/
     }
 
     function showError(message) {
@@ -509,20 +515,19 @@
         }, 1000);
     }
 
-    //Collapsible Effect
+    // Collapsible Effect
     function showOrHideTweetsInYear(event) {
-        let parentid = event.target.nextElementSibling.getAttribute('id');
-        parentelem = document.getElementById(`${parentid}`);
-        parentelem.classList.toggle('hide');
+        let parentId = event.target.nextElementSibling.getAttribute('id');
+        let parentElem = document.getElementById(parentId);
+        parentElem.classList.toggle('hide');
     }
 
     function shareToTwitter() {
         let url;
         if (window.username !== undefined) {
-            const {month, day} = window;
-            const encodedUri = encodeURIComponent(`?username=${window.username}&date=${monthEl.options[monthEl.selectedIndex].textContent}+${dayEl.value}`);
+            const queryString = encodeURIComponent(`?username=${window.username}&date=${monthEl.options[monthEl.selectedIndex].textContent}+${dayEl.value}`);
             url = `http://twitter.com/share?text=Here's my TwitterThrowback. Check yours here` +
-                `&url=http://oldtweets.today/${encodedUri}&hashtags=OldTweetsToday,TwitterThrowback`;
+                `&url=http://oldtweets.today/${queryString}&hashtags=OldTweetsToday,TwitterThrowback`;
         } else {
             url = `http://twitter.com/share?text=Wanna see what you were tweeting on this day in the past? Check out ` +
                 `&url=http://oldtweets.today/&hashtags=OldTweetsToday,TwitterThrowback`;
@@ -533,25 +538,13 @@
 
     }
 
-    function debounce(f, t) {
-        return function (args) {
-            let previousCall = this.lastCall;
-            this.lastCall = Date.now();
-            if (previousCall && ((this.lastCall - previousCall) <= t)) {
-                clearTimeout(this.lastCallTimer);
-            }
-            this.lastCallTimer = setTimeout(() => (console.log("calling"), f(args)), t);
-        }
-    }
 
 </script>
 <script>
     // When the user scrolls down 30px from the top of the document, show the button
-    window.onscroll = () => {
-        scrollDown()
-    };
+    window.onscroll = showScrollToTopButton;
 
-    function scrollDown() {
+    function showScrollToTopButton() {
         if (document.body.scrollTop > 30 || document.documentElement.scrollTop > 30) {
             document.getElementById("topBtn").style.display = "block";
         } else {
