@@ -2,7 +2,7 @@ service: tweeted-on-this-day
 
 provider:
   name: google
-  runtime: nodejs10
+  runtime: nodejs12
   project: tweetedonthisday
   timeout: 30s
   region: europe-west1
