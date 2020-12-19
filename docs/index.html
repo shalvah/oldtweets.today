@@ -447,7 +447,7 @@
     function getTweetsOnThisDay(username, day, month) {
         const today = new Date();
         const utcOffset = today.getTimezoneOffset();
-        const baseApiUrl = `http://localhost:9010/tweeted-on-this-day-getTweetsOnThisDay?username=${username}&utcOffset=${utcOffset}&day=${day}&month=${month}`;
+        const baseApiUrl = `https://europe-west1-tweetedonthisday.cloudfunctions.net/tweeted-on-this-day-dev-getTweetsOnThisDay?username=${username}&utcOffset=${utcOffset}&day=${day}&month=${month}`;
         let baseYear = today.getFullYear();
         let years = [];
 
