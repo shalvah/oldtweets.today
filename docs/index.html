@@ -54,7 +54,7 @@
             padding: 4px;
         }
 
-        a:hover {
+        a:hover:not(.year_button) {
             border: 1px dotted #000;
             padding: 3px;
             border-radius: 10px;
@@ -102,8 +102,7 @@
         .year_button {
             background-color: #0d47a1;
             display: block !important;
-            width: 50%;
-            margin: 0 auto;
+            margin: 1rem 1rem;
             height: 3.0rem;
             text-align: center;
             padding: 0.5rem 1rem;
@@ -131,7 +130,9 @@
 
         #tweets-container {
             padding-top: 10px;
-            display: none;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
         }
 
         #help-text {
@@ -369,7 +370,6 @@
             submitButton.removeAttribute('disabled');
             submitButton.innerText = 'Show me';
             successful && (loadingIndicator.style.display = 'none');
-            successful && (tweetsContainer.style.display = 'block');
         }, 500);
     }
 
@@ -394,12 +394,29 @@
         event.preventDefault();
         window.username = usernameInput.value;
         window.username = window.username.trim();
-        history.pushState({username}, '', `/?username=${username}&date=${monthEl.options[monthEl.selectedIndex].textContent}+${dayEl.value}`);
+        history.pushState({username}, '', `${window.location.pathname}?username=${username}&date=${monthEl.options[monthEl.selectedIndex].textContent}+${dayEl.value}`);
         showLoadingIndicator();
 
         tweetsContainer.innerHTML = '';
         getTweetsOnThisDay(username, dayEl.value, monthEl.value)
-            .then(tweets => {
+            .then(responses => {
+                // If the backend was unable to scrape Twitter's site,
+                // redirect to Twitter search results
+                if (typeof responses[new Date().getFullYear()] == 'string') {
+                    let html = []
+                    for (let year of Object.keys(responses).reverse()) {
+                        html.push(`<div>`);
+                        html.push(`<a class="year_button" href="${responses[year]}" target="_blank">${year}</a>`);
+                        html.push(`</div>`);
+                    }
+                    doneWithLoading();
+                    setTimeout(() => {
+                        document.getElementById('tweets-container').innerHTML = html.join("\n");
+                    }, 500);
+                    return;
+                }
+
+                let tweets = responses
                 let tweetsHtml = [];
                 let hasContent = false;
                 for (let year of Object.keys(tweets).reverse()) {
@@ -411,7 +428,6 @@
                         tweetsHtml.push(tweets[year].join("\n"));
                         tweetsHtml.push("</div><br>");
                         tweetsHtml.push("</div>");
-
                     }
                 }
 
@@ -419,7 +435,7 @@
                     throw `Sorry, we couldn't find any tweets by <b>${window.username}</b> on <b>${thisDayTextEl.textContent}</b>😕`;
                 }
 
-                injectContentIntoPage(tweetsHtml.join("\n"), true);
+                injectTweetsIntoPage(tweetsHtml.join("\n"));
                 document.title = `@${username.replace("@", "")}'s old Tweets`;
             })
             .catch(showError);
@@ -431,7 +447,7 @@
     function getTweetsOnThisDay(username, day, month) {
         const today = new Date();
         const utcOffset = today.getTimezoneOffset();
-        const baseApiUrl = `https://europe-west1-tweetedonthisday.cloudfunctions.net/tweeted-on-this-day-dev-getTweetsOnThisDay?username=${username}&utcOffset=${utcOffset}&day=${day}&month=${month}`;
+        const baseApiUrl = `http://localhost:9010/tweeted-on-this-day-getTweetsOnThisDay?username=${username}&utcOffset=${utcOffset}&day=${day}&month=${month}`;
         let baseYear = today.getFullYear();
         let years = [];
 
@@ -473,38 +489,13 @@
     /**
      * @param {string} content
      */
-    function injectContentIntoPage(content) {
+    function injectTweetsIntoPage(content) {
         let container = document.getElementById('tweets-container');
         container.innerHTML = content;
         twttr.widgets.load(container);
         requestAnimationFrame(() => console.log("RF 1"));
         requestAnimationFrame(() => requestAnimationFrame(() => console.log("RF 1")));
         requestAnimationFrame(() => requestAnimationFrame(() => requestAnimationFrame(doneWithLoading)));
-/*
-        const done = debounce(doneWithLoading, 10000);
-        function mutationHandler(mutationList, observer) {
-            console.log("mutated");
-            if (mutationList.find((mutation) => mutation.type === 'childList')) {
-                done();
-            }
-        }
-
-        // Remove "Loading" indicator when tweets are done loading
-        const observer = new MutationObserver(mutationHandler);
-        observer.observe(container, {
-            childList: true,
-            subtree: true,
-        });
-    function debounce(f, t) {
-        return function (args) {
-            let previousCall = this.lastCall;
-            this.lastCall = Date.now();
-            if (previousCall && ((this.lastCall - previousCall) <= t)) {
-                clearTimeout(this.lastCallTimer);
-            }
-            this.lastCallTimer = setTimeout(() => (console.log("calling"), f(args)), t);
-        }
-    }*/
     }
 
     function showError(message) {

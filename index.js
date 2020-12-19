@@ -1,6 +1,7 @@
 'use strict';
+const aargh = require('aargh');
 
-function getTweetsOnThisDay(username, { from, until }, today = new Date()) {
+function getTweetsOnThisDay(username, {from, until}, today = new Date()) {
     const baseDate = today;
 
     // Generate an array of all the years we're looking for tweets in.
@@ -41,7 +42,17 @@ function getTweetsMadeInYear(username, date) {
                 }).get();
 
         })
-        .then(tweets => Promise.all(tweets.map(getTweetEmbedHtml)));
+        .then(tweets => Promise.all(tweets.map(getTweetEmbedHtml)))
+        .catch(e => {
+            return aargh(e)
+                .handle(got.HTTPError, (e) => {
+                    if (e.response.body.includes("This browser is no longer supported.")) {
+                        // Just redirect the users directly to Twitter
+                        return encodeURI(`${url}${searchQuery}`)
+                    }
+                    throw e
+                }).throw();
+        })
 }
 
 function getSearchQuery(username, baseDate) {
@@ -92,7 +103,7 @@ exports.getTweetsOnThisDay = (req, res) => {
             let day = parseInt(req.query.day) || today.getDate();
             let month = parseInt(req.query.month) || today.getMonth() + 1;
             today = new Date(`${from}-${month}-${day}`);
-            
+
             // Our function runs in UTC time. So if a user in UTC+1 (offset: -60)
             // uses our app at 00:30 Feb 16, they'll get tweets made on Feb 15.
             // We need to change our date query to reflect the day wherever they are.
@@ -101,7 +112,7 @@ exports.getTweetsOnThisDay = (req, res) => {
                 today.setTime(today.getTime() + (-1 * offset * 60 * 1000));
             }
 
-            return getTweetsOnThisDay(username, { from, until }, today)
+            return getTweetsOnThisDay(username, {from, until}, today)
                 .then(tweets => respond(res, tweets));
         default:
             return respond(res, {error: "Read the fucking docs; it's a GET request."}, 405);

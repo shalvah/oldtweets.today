@@ -44,4 +44,4 @@ You can test the main function manually using [coppa](https://github.com/rametta
 npm run coppa
 ```
 
-Then visit http://localhost:8080/tweeted-on-this-day-getTweetsOnThisDay?username=your-username
+Then visit http://localhost:9010/tweeted-on-this-day-getTweetsOnThisDay?username=your-username

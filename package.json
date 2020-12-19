@@ -4,7 +4,7 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "coppa": "coppa start"
+    "coppa": "coppa start --port 9010"
   },
   "author": "serverless.com",
   "license": "MIT",
@@ -13,6 +13,7 @@
     "serverless-google-cloudfunctions": "^3.1.0"
   },
   "dependencies": {
+    "aargh": "^1.4.0",
     "cheerio": "^1.0.0-rc.2",
     "got": "^9.6.0"
   }

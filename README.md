@@ -1,7 +1,7 @@
 # &#35;TwitterThrowback
 You know of [Facebook's "On This Day" feature](https://www.facebook.com/help/439014052921484)? It shows you the posts you made (and a few other things) on this day (for example, February 15) in the past. If you're on Facebook, you can see yours at [facebook.com/onthisday](https://facebook.com/onthisday).
 
-Yeah, this is that, but for Twitter. You can see the tweets you've made on this day in the past by visting [oldtweets.today](http://oldtweets.today).
+Yeah, this is that, but for Twitter. You can see the tweets you've made on this day in the past by visiting [oldtweets.today](http://oldtweets.today).
 
 ## How this works
 This repo contains two different components.
