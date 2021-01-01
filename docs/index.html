@@ -370,10 +370,10 @@
     let queryParams = new URLSearchParams(queryString);
     if (queryParams.has('username')) {
         usernameInput.value = queryParams.get('username');
-		}
-		else if( extractUsernameFromLocalStorage()){
-			usernameInput.value = extractUsernameFromLocalStorage();
-		}
+    }
+    else if( extractUsernameFromLocalStorage()){
+        usernameInput.value = extractUsernameFromLocalStorage();
+    }
     if (queryParams.has('date')) {
         const [month, day] = getMonthAndDay(queryParams.get('date'));
         window.monthEl.value = month.toString();
