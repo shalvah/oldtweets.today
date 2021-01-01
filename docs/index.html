@@ -340,6 +340,29 @@
         return [dummyDate.getMonth() + 1, dummyDate.getDate()];
     }
 </script>
+
+<script>
+	function extractUsernameFromLocalStorage() {
+		const username = window.localStorage.getItem('username');
+		return username;
+	}
+
+	/**
+	 * @param { string } username
+	 */
+
+	function saveUsernameToLocalStorage(username) {
+		window.localStorage.setItem('username', username);
+	}
+</script>
+<script>
+	//saves username input value only when usernameInput loses focus
+	usernameInput.onblur = saveUsernameOnBlurEvent;
+
+	function saveUsernameOnBlurEvent() {
+		saveUsernameToLocalStorage(usernameInput.value);
+	}
+</script>
 <script>
     // Prefill data if the user is coming from a direct link (oldtweets.today/?username=<username>&date=<date>)
     // Normally, I'd want to do the username part using a path, but GitHub Pages doesn't support routing via paths
@@ -347,6 +370,10 @@
     let queryParams = new URLSearchParams(queryString);
     if (queryParams.has('username')) {
         usernameInput.value = queryParams.get('username');
+    }
+    // Prefill data if there exists a username saved in the localstorage
+    else if( extractUsernameFromLocalStorage()){
+        usernameInput.value = extractUsernameFromLocalStorage();
     }
     if (queryParams.has('date')) {
         const [month, day] = getMonthAndDay(queryParams.get('date'));
