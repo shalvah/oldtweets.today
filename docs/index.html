@@ -274,6 +274,19 @@
     <img id="shareImage" src="./img/twitter_icon.png"></button>
 <button onclick="backToTop()" id="topBtn" title="Back to top">👆</button>
 
+<script
+        src="https://browser.sentry-cdn.com/6.2.2/bundle.min.js"
+        integrity="sha384-SEu4bJkpht31dkOz4nRcKDxnisSU+Jc8WRSOnBSZJ2yVMlbk4sAKQSrBw6qBVzKR"
+        crossorigin="anonymous"
+></script>
+
+<script>
+    Sentry.init({
+        dsn: "https://6c3409df92614af58987b5a98ce28ad4@o334853.ingest.sentry.io/5302431",
+        integrations: [],
+    });
+</script>
+
 <script>
     // Set the default date input value to today
     window.monthEl = document.getElementById('month');
