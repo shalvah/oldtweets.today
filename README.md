@@ -14,11 +14,15 @@ The API is a serverless JavaScript function hosted on [Google Cloud Functions](h
  
  However, you can use the search on twitter.com to fetch tweets by a particular person on a particular date, with little restriction. That's what this API does. It runs the search on Twitter's site, scrapes the results and extracts the necessary data and returns the tweets requested as embeddable HTML.
 
-## Want to contribute?
-See the [contribution guide](./CONTRIBUTING.md).
+## Want to contribute or play with this locally?
+See the [contribution](./CONTRIBUTING.md) and [development](./DEVELOPMENT.md) guides.
 
 ## License
-Do whatever you want with the code.
+Do whatever you want.
 
-## Support
-Hey, I love building cool, open-source stuff like this. You can help support me and keep them running by [becoming a patron](https://patreon.com/shalvah). Thanks!🤗
+## If you like this...
+then you might like some other tools I've built around Twitter and their API:
+- [@this_vid](https://github.com/shalvah/DownloadThisVideo)
+- [@RemindMe_OfThis](https://github.com/shalvah/RemindMeOfThisTweet)
+- [twittersignin](https://github.com/shalvah/twittersignin)
+- [twitter-error-handler](https://github.com/shalvah/twitter-error-handler)
