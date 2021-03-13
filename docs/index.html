@@ -411,24 +411,25 @@
         showLoadingIndicator();
 
         tweetsContainer.innerHTML = '';
+
+        // Web scraping doesn't work for now; temporary fix
+        let html = []
+        for (let year = (new Date).getFullYear(); year > 2005; year--) {
+            html.push(`<div>`);
+            let d = (new Date);
+            d.setFullYear(year);
+            html.push(`<a class="year_button" href="https://mobile.twitter.com/search?q=${getSearchQuery(username, d)}" target="_blank">${year}</a>`);
+            html.push(`</div>`);
+        }
+        doneWithLoading();
+        setTimeout(() => {
+            document.getElementById('tweets-container').innerHTML = html.join("\n");
+        }, 500);
+        return;
+        /*
+        // API doesn't work for now
         getTweetsOnThisDay(username, dayEl.value, monthEl.value)
             .then(responses => {
-                // If the backend was unable to scrape Twitter's site,
-                // redirect to Twitter search results
-                if (typeof responses[new Date().getFullYear()] == 'string') {
-                    let html = []
-                    for (let year of Object.keys(responses).reverse()) {
-                        html.push(`<div>`);
-                        html.push(`<a class="year_button" href="${responses[year]}" target="_blank">${year}</a>`);
-                        html.push(`</div>`);
-                    }
-                    doneWithLoading();
-                    setTimeout(() => {
-                        document.getElementById('tweets-container').innerHTML = html.join("\n");
-                    }, 500);
-                    return;
-                }
-
                 let tweets = responses
                 let tweetsHtml = [];
                 let hasContent = false;
@@ -451,20 +452,22 @@
                 injectTweetsIntoPage(tweetsHtml.join("\n"));
                 document.title = `@${username.replace("@", "")}'s old Tweets`;
             })
-            .catch(showError);
+            .catch(showError);*/
     }
 
-    /**
-     * @param {string} username
-     */
-    function getTweetsOnThisDay(username, day, month) {
-        const today = new Date();
-        const utcOffset = today.getTimezoneOffset();
-        const baseApiUrl = `https://europe-west1-tweetedonthisday.cloudfunctions.net/tweeted-on-this-day-dev-getTweetsOnThisDay?username=${username}&utcOffset=${utcOffset}&day=${day}&month=${month}`;
-        let baseYear = today.getFullYear();
+
+    function getSearchQuery(username, baseDate) {
+        const endDate = new Date(baseDate);
+        endDate.setDate(parseInt(baseDate.getDate()) + 1);
+        const start = baseDate.toISOString().replace(/T.*/, '');
+        const end = endDate.toISOString().replace(/T.*/, '');
+        return `from:${username} since:${start} until:${end}`;
+    }
+
+    function getPreviousYears(baseYear) {
         let years = [];
 
-        // request in three-year batches to improve speed
+        // Request in three-year batches to improve speed
         while (baseYear > 2005) {
             let endYear = baseYear - 2;
             if ((endYear - 2006) < 2) {
@@ -473,7 +476,14 @@
             years.push([baseYear, endYear]);
             baseYear = endYear - 1;
         }
+        return years;
+    }
 
+    function getTweetsOnThisDay(username, day, month) {
+        const today = new Date();
+        const utcOffset = today.getTimezoneOffset();
+        const years = getPreviousYears(today.getFullYear());
+        const baseApiUrl = `https://europe-west1-tweetedonthisday.cloudfunctions.net/tweeted-on-this-day-dev-getTweetsOnThisDay?username=${username}&utcOffset=${utcOffset}&day=${day}&month=${month}`;
         let apiUrls = years.map(yearSet => `${baseApiUrl}&from=${yearSet[0]}&until=${yearSet[1]}`);
 
         return Promise.all(apiUrls.map(url => fetch(url)))
