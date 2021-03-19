@@ -356,8 +356,11 @@
 
 <script>
 	function extractUsernameFromLocalStorage() {
-		const username = window.localStorage.getItem('username');
-		return username;
+	    try {
+            return window.localStorage.getItem('username');
+        } catch (e) {
+	        return '';
+        }
 	}
 
 	/**
@@ -385,9 +388,10 @@
         usernameInput.value = queryParams.get('username');
     }
     // Prefill data if there exists a username saved in the localstorage
-    else if( extractUsernameFromLocalStorage()){
+    else {
         usernameInput.value = extractUsernameFromLocalStorage();
     }
+
     if (queryParams.has('date')) {
         const [month, day] = getMonthAndDay(queryParams.get('date'));
         window.monthEl.value = month.toString();
@@ -575,7 +579,12 @@
         }
         const newWindow = window.open(url, '_blank');
 
-        newWindow.focus();
+        if (newWindow) {
+            newWindow.focus();
+        } else {
+            // Some browsers (eg mobile Safari) may not allow opening popups
+            window.location.assign(url);
+        }
 
     }
 
