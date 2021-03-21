@@ -303,22 +303,24 @@
         thisDayTextEl.textContent = `${monthEl.options[monthEl.selectedIndex].textContent} ${dayEl.value}`;
     }
 
+    function getNumberOfDaysInMonth(month) {
+        if ([1, 3, 5, 7, 8, 10, 12].includes(month)) {
+            return 31;
+        } else if ([4, 6, 9, 11].includes(month)) {
+            return 30;
+        } else {
+            return 29;
+        }
+    }
+
     function populateDaysDropdownBasedOnCurrentMonth() {
         let selectedMonth = Number(monthEl.value);
-        let selectedDay = dayEl.value;
-        let numberOfDays;
-        if ([1, 3, 5, 7, 8, 10, 12].includes(selectedMonth)) {
-            numberOfDays = 31;
-        } else if ([4, 6, 9, 11].includes(selectedMonth)) {
-            numberOfDays = 30;
-        } else {
-            numberOfDays = 29;
-        }
+        let numberOfDays = getNumberOfDaysInMonth(selectedMonth);
+        let previouslySelectedDay = dayEl.value || new Date().getDate();
         populateDaysDropdown(numberOfDays);
         // Update the selected day in the dropdown
         // Defaults to the largest day if it results in an invalid date (like Feb 31)
-        dayEl.value = selectedDay <= numberOfDays ? selectedDay : numberOfDays;
-        setThisDayValue();
+        dayEl.value = previouslySelectedDay <= numberOfDays ? previouslySelectedDay : numberOfDays;
     }
 
     function populateDaysDropdown(numberOfDaysInMonth) {
@@ -329,7 +331,10 @@
         }
     }
 
-    window.monthEl.addEventListener('change', populateDaysDropdownBasedOnCurrentMonth);
+    window.monthEl.addEventListener('change', () => {
+        populateDaysDropdownBasedOnCurrentMonth();
+        setThisDayValue();
+    });
     window.dayEl.addEventListener('change', setThisDayValue);
 </script>
 
@@ -393,9 +398,16 @@
     }
 
     if (queryParams.has('date')) {
-        const [month, day] = getMonthAndDay(queryParams.get('date'));
-        window.monthEl.value = month.toString();
-        window.dayEl.value = day;
+        let [month, day] = getMonthAndDay(queryParams.get('date'));
+        month = parseInt(month, 10);
+        if (!Number.isNaN(month) && month <= 12 && month > 0) {
+            window.monthEl.value = month;
+        }
+
+        day = parseInt(day, 10);
+        if (!Number.isNaN(day) && day <= getNumberOfDaysInMonth(month) && day > 0) {
+            window.dayEl.value = day;
+        }
     }
     setThisDayValue();
 </script>
