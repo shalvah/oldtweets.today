@@ -460,7 +460,7 @@
         for (let year = (new Date).getFullYear(); year > 2005; year--) {
             html.push(`<div>`);
             let d = (new Date);
-            d.setFullYear(year);
+            d.setFullYear(year, monthEl.value - 1, dayEl.value);
             html.push(`<a class="year_button" href="https://mobile.twitter.com/search?q=${getSearchQuery(username, d)}" target="_blank">${year}</a>`);
             html.push(`</div>`);
         }
