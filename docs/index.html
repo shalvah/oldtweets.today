@@ -135,6 +135,22 @@
             justify-content: center;
         }
 
+        #results-iframe {
+            display: none;
+            width: 100%;
+            max-width: 600px;
+            height: 80vh;
+            border: 2px solid #0d47a1;
+            border-radius: 10px;
+            margin: 20px auto;
+            background: white;
+        }
+
+        .year_button.active {
+            background-color: #1565c0;
+            box-shadow: 0 0 10px rgba(13, 71, 161, 0.5);
+        }
+
         #help-text {
             padding-top: 5px;
         }
@@ -260,6 +276,7 @@
 
 <div id="loading-indicator"></div>
 <div id="tweets-container"></div>
+<iframe id="results-iframe" title="Search Results"></iframe>
 
 <br>
 <div>
@@ -461,7 +478,11 @@
             html.push(`<div>`);
             let d = (new Date);
             d.setFullYear(year, monthEl.value - 1, dayEl.value);
-            html.push(`<a class="year_button" href="https://mobile.twitter.com/search?q=${getSearchQuery(username, d)}" target="_blank">${year}</a>`);
+            const searchQuery = encodeURIComponent(getSearchQuery(username, d));
+            const searchUrl = `https://mobile.twitter.com/search?q=${searchQuery}`;
+            // HTML encode the URL for safe insertion into the data attribute
+            const encodedUrl = searchUrl.replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+            html.push(`<span class="year_button" data-url="${encodedUrl}" onclick="loadYearInIframe(this)">${year}</span>`);
             html.push(`</div>`);
         }
         doneWithLoading();
@@ -577,6 +598,37 @@
         let parentId = event.target.nextElementSibling.getAttribute('id');
         let parentElem = document.getElementById(parentId);
         parentElem.classList.toggle('hide');
+    }
+
+    function loadYearInIframe(element) {
+        const url = element.getAttribute('data-url');
+        const iframe = document.getElementById('results-iframe');
+        
+        // Validate URL is from expected Twitter domain
+        const allowedDomains = ['mobile.twitter.com', 'twitter.com', 'x.com', 'mobile.x.com'];
+        try {
+            const urlObj = new URL(url);
+            if (!allowedDomains.includes(urlObj.hostname)) {
+                console.error('Invalid URL domain');
+                return;
+            }
+        } catch (e) {
+            console.error('Invalid URL');
+            return;
+        }
+        
+        // Remove active class from all year buttons
+        document.querySelectorAll('.year_button').forEach(btn => btn.classList.remove('active'));
+        
+        // Add active class to clicked button
+        element.classList.add('active');
+        
+        // Load the URL in the iframe and show it
+        iframe.src = url;
+        iframe.style.display = 'block';
+        
+        // Scroll to the iframe
+        iframe.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
 
     function shareToTwitter() {
